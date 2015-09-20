@@ -1,6 +1,6 @@
 //
-//  XCPObject.swift
-//  XCPEditor
+//  PBXObject.swift
+//  PBXEditor
 //
 //  Created by jayden on 15/9/20.
 //  Copyright © 2015年 jayden. All rights reserved.
@@ -13,7 +13,7 @@ class XCPObject{
     let isaKey = "isa"
     
     var _guid:String!
-    var _data:Dictionary<String,Any>!
+    var _data:[String:Any]!
     
     var guid:String{
         if let _ = _guid{
@@ -22,7 +22,7 @@ class XCPObject{
         return _guid
     }
     
-    var data:Dictionary<String,Any>{
+    var data:[String:Any]{
         if let _ = _data{
             _data = [:]
         }
@@ -43,7 +43,7 @@ class XCPObject{
         }
     }
     
-    convenience init(guid:String,dictonary:Dictionary<String,Any>){
+    convenience init(guid:String,dictonary:[String:Any]){
         self.init(guid: guid)
         guard let isa = dictonary[isaKey] as? String where isa == _stdlib_getDemangledTypeName(self).componentsSeparatedByString(".").last! else {
             print("Dictionary is not a valid ISA object")
