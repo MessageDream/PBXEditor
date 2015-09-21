@@ -8,7 +8,7 @@
 
 import Foundation
 
-class XCPObject{
+class PBXObject{
     
     let isaKey = "isa"
     
@@ -17,7 +17,7 @@ class XCPObject{
     
     var guid:String{
         if let _ = _guid{
-            _guid = ""
+            _guid = self.dynamicType.generateGuid()
         }
         return _guid
     }
@@ -30,15 +30,19 @@ class XCPObject{
         return _data
     }
     
+    var description:String{
+        return "{" + self.toCSV() + "}"
+    }
+    
     init(){
         _data = [:]
         _data[isaKey] = _stdlib_getDemangledTypeName(self).componentsSeparatedByString(".").last!
-        _guid = self.generateGuid()
+        _guid = self.dynamicType.generateGuid()
     }
     
     convenience init(guid:String){
         self.init()
-        if self.isGuid(guid){
+        if self.dynamicType.isGuid(guid){
             _guid = guid
         }
     }
@@ -49,17 +53,39 @@ class XCPObject{
             print("Dictionary is not a valid ISA object")
             return
         }
+        
         dictonary.forEach{
             _data[$0] = $1
         }
         
     }
     
-    func generateGuid() -> String {
-        return ""
+    func add(key:String,obj:Any) -> (){
+        _data[key] = obj
     }
     
-    func isGuid(guid:String) -> Bool{
-        return true
+    func remove(key:String) -> (){
+        _data.removeValueForKey(key)
+    }
+    
+    func containsKey(key:String) -> Bool{
+        return _data.keys.contains(key)
+    }
+    
+    func toCSV() -> String{
+        return "\"" + data.description + "\","
+    }
+    
+    
+   static func generateGuid() -> String {
+        let uuid = NSUUID().UUIDString
+        return uuid.substringToIndex(uuid.startIndex.advancedBy(8))
+    }
+    
+   static func isGuid(guid:String) -> Bool{
+        do{
+            let regex = try! NSRegularExpression(pattern: "^[A-Za-z0-9]{24}$", options: .CaseInsensitive)
+            return regex.numberOfMatchesInString(guid, options: [], range: NSMakeRange(0, guid.characters.count)) > 0
+        }
     }
 }
