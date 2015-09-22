@@ -4,7 +4,7 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>XCPEditor.xcscheme</key>
+		<key>PBXEditor.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
@@ -12,7 +12,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>B26BFC951BAEE577006FDC3B</key>
+		<key>B213EFB51BB1096700577E46</key>
 		<dict>
 			<key>primary</key>
 			<true/>
