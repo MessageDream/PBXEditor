@@ -39,10 +39,80 @@ public class PBXBuildFile:PBXObject{
                 
                 settings = [:]
                 settings[attributesKey] = attributes
+                _data[settingsKey] = settings
             }
-                return true
+            return true
         }
         
+        settings = _data[settingsKey] as! [String:Any]
+        if !settings.keys.contains(attributesKey){
+            if weak {
+                attributes = []
+                attributes.append(weakValue)
+                settings[attributesKey] = attributes
+                _data[settingsKey] = settings
+                return true
+            }
+            return false
+        }
+        
+        attributes = settings[attributesKey] as! [String]
+        
+        if weak {
+            attributes.append(weakValue)
+        }else{
+            attributes.removeAtIndex(attributes.indexOf(weakValue)!)
+        }
+        
+        settings[attributesKey] = attributes
+        self.add(settingsKey, obj: settings)
+        
         return true
+        
+    }
+    
+    public func addCodeSignOnCopy() -> Bool {
+        if !self.containsKey(settingsKey){
+            _data[settingsKey] = [String:Any]()
+        }
+        
+        var settings = _data[settingsKey] as! [String:Any]
+        if !settings.keys.contains(attributesKey){
+            var attributes = [String]()
+            attributes.append("CodeSignOnCopy")
+            attributes.append("RemoveHeadersOnCopy")
+            settings[attributesKey] = attributes
+        }else{
+            var attributes = settings[attributesKey] as! [String]
+            attributes.append("CodeSignOnCopy")
+            attributes.append("RemoveHeadersOnCopy")
+            settings[attributesKey] = attributes
+        }
+        return true
+    }
+    
+    public func addCompilerFlag(flag:String) -> Bool{
+        if !self.containsKey(settingsKey){
+            _data[settingsKey] = [String:Any]()
+        }
+        var  settings = _data[settingsKey] as! [String:Any]
+        guard settings.keys.contains(compilerFlagsKey) else{
+            settings[compilerFlagsKey] = flag
+            _data[settingsKey] = settings
+            return true
+        }
+       var flags = (settings[compilerFlagsKey] as! String).componentsSeparatedByString(" ")
+        if  flags.contains(flag){
+            return false
+        }
+        
+        flags.append(flag)
+        
+        settings[compilerFlagsKey] = flags.joinWithSeparator(" ")
+        
+        _data[settingsKey] = settings
+        
+        return true
+        
     }
 }
