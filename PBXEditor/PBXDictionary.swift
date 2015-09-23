@@ -17,19 +17,33 @@ extension String:StringType {
 
 
 public extension Dictionary where Key:StringType,Value:PBXObject{
-    init(dictionary:[Key:Value]){
+    init(dictionary:[Key:Any]){
         self.init()
         dictionary.forEach{
-            self[$0.0] = $0.1
+            if let dic = $0.1 as? [String:Any]{
+                if let isa = dic["isa"] as? String  where isa == String(Value){
+                    if let guid = $0.0 as? String{
+                        self[$0.0] =  Value(guid:guid, dictonary:dic)
+                    }
+                }
+            }
         }
-    }
-    public mutating func append(dictionary:[Key:Value]) -> () {
-        dictionary.forEach{
-            self[$0.0] = $0.1
-        }
+        
+        
+        //    public mutating func append(dictionary:[Key:Value]) -> () {
+        //        dictionary.forEach{
+        //            self[$0.0] = $0.1
+        //        }
+        //    }
     }
 }
 
-public extension Dictionary where Key:Comparable,Value:PBXObject{
- 
+public extension Dictionary{
+    public mutating func append(dictionary:Dictionary) -> () {
+        dictionary.forEach{
+            self[$0.0] = $0.1
+        }
+        
+    }
 }
+    

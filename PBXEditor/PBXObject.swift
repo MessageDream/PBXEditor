@@ -10,10 +10,10 @@ import Foundation
 
 public class PBXObject:CustomStringConvertible{
     
-    let isaKey = "isa"
+    internal let isaKey = "isa"
     
-    var _guid:String!
-    var _data:[String:Any]!
+    internal var _guid:String!
+    internal var _data:[String:Any]!
     
     public var guid:String{
         if let _ = _guid{
@@ -35,20 +35,20 @@ public class PBXObject:CustomStringConvertible{
         return "{" + self.toCSV() + "}"
     }
     
-    public init(){
+   required public init(){
         _data = [:]
         _data[isaKey] = _stdlib_getDemangledTypeName(self).componentsSeparatedByString(".").last!
         _guid = self.dynamicType.generateGuid()
     }
     
-    public convenience init(guid:String){
+   required public convenience init(guid:String){
         self.init()
         if self.dynamicType.isGuid(guid){
             _guid = guid
         }
     }
     
-    public convenience init(guid:String,dictonary:[String:Any]){
+   required public convenience init(guid:String,dictonary:[String:Any]){
         self.init(guid: guid)
         guard let isa = dictonary[isaKey] as? String where isa == _stdlib_getDemangledTypeName(self).componentsSeparatedByString(".").last! else {
             print("Dictionary is not a valid ISA object")
@@ -58,7 +58,6 @@ public class PBXObject:CustomStringConvertible{
         dictonary.forEach{
             _data[$0] = $1
         }
-        
     }
     
     public func add(key:String,obj:Any) -> (){
@@ -100,7 +99,18 @@ public class PBXObject:CustomStringConvertible{
 }
 
 public class PBXNativeTarget:PBXObject{
-    public override init(){
+    public required init(){
         super.init()
+    }
+}
+
+public class PBXContainerItemProxy:PBXObject{
+    public required init(){
+        super.init()
+    }
+}
+public class PBXReferenceProxy:PBXObject{
+    public required init(){
+        
     }
 }
