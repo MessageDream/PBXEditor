@@ -61,7 +61,9 @@ public class PBXBuildFile:PBXObject{
         if weak {
             attributes.append(weakValue)
         }else{
-            attributes.removeAtIndex(attributes.indexOf(weakValue)!)
+            if let wv = attributes.indexOf(weakValue){
+                attributes.removeAtIndex(wv)
+            }
         }
         
         settings[attributesKey] = attributes

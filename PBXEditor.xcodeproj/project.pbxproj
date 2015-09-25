@@ -10,6 +10,10 @@
 		B213EFBA1BB1096700577E46 /* PBXEditor.h in Headers */ = {isa = PBXBuildFile; fileRef = B213EFB91BB1096700577E46 /* PBXEditor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B213EFC31BB109C700577E46 /* PBXObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = B213EFC21BB109C700577E46 /* PBXObject.swift */; settings = {ASSET_TAGS = (); }; };
 		B213EFC51BB123AA00577E46 /* PBXDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B213EFC41BB123AA00577E46 /* PBXDictionary.swift */; settings = {ASSET_TAGS = (); }; };
+		B27CDFE01BB52912001C79FF /* PBXProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27CDFDF1BB52912001C79FF /* PBXProject.swift */; settings = {ASSET_TAGS = (); }; };
+		B27CDFE21BB539F1001C79FF /* XCConfigurationList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27CDFE11BB539F1001C79FF /* XCConfigurationList.swift */; settings = {ASSET_TAGS = (); }; };
+		B27CDFE41BB542EF001C79FF /* XCPBXResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27CDFE31BB542EF001C79FF /* XCPBXResolver.swift */; settings = {ASSET_TAGS = (); }; };
+		B27CDFE61BB54497001C79FF /* XCBuildConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27CDFE51BB54497001C79FF /* XCBuildConfiguration.swift */; settings = {ASSET_TAGS = (); }; };
 		B2C852411BB2AB68009BC977 /* PBXParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C852401BB2AB68009BC977 /* PBXParser.swift */; settings = {ASSET_TAGS = (); }; };
 		B2C852431BB2AE4E009BC977 /* PBXBuildPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C852421BB2AE4E009BC977 /* PBXBuildPhase.swift */; settings = {ASSET_TAGS = (); }; };
 		B2C852451BB2B619009BC977 /* PBXGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C852441BB2B619009BC977 /* PBXGroup.swift */; settings = {ASSET_TAGS = (); }; };
@@ -24,6 +28,10 @@
 		B213EFC11BB109C700577E46 /* TestPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TestPlayground.playground; sourceTree = "<group>"; };
 		B213EFC21BB109C700577E46 /* PBXObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXObject.swift; sourceTree = "<group>"; };
 		B213EFC41BB123AA00577E46 /* PBXDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXDictionary.swift; sourceTree = "<group>"; };
+		B27CDFDF1BB52912001C79FF /* PBXProject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXProject.swift; sourceTree = "<group>"; };
+		B27CDFE11BB539F1001C79FF /* XCConfigurationList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCConfigurationList.swift; sourceTree = "<group>"; };
+		B27CDFE31BB542EF001C79FF /* XCPBXResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCPBXResolver.swift; sourceTree = "<group>"; };
+		B27CDFE51BB54497001C79FF /* XCBuildConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCBuildConfiguration.swift; sourceTree = "<group>"; };
 		B2C852401BB2AB68009BC977 /* PBXParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXParser.swift; sourceTree = "<group>"; };
 		B2C852421BB2AE4E009BC977 /* PBXBuildPhase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXBuildPhase.swift; sourceTree = "<group>"; };
 		B2C852441BB2B619009BC977 /* PBXGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXGroup.swift; sourceTree = "<group>"; };
@@ -62,15 +70,19 @@
 			isa = PBXGroup;
 			children = (
 				B213EFC11BB109C700577E46 /* TestPlayground.playground */,
-				B213EFC21BB109C700577E46 /* PBXObject.swift */,
 				B213EFB91BB1096700577E46 /* PBXEditor.h */,
 				B213EFBB1BB1096700577E46 /* Info.plist */,
 				B213EFC41BB123AA00577E46 /* PBXDictionary.swift */,
-				B2C852401BB2AB68009BC977 /* PBXParser.swift */,
-				B2C852421BB2AE4E009BC977 /* PBXBuildPhase.swift */,
+				B213EFC21BB109C700577E46 /* PBXObject.swift */,
 				B2C852441BB2B619009BC977 /* PBXGroup.swift */,
 				B2C852461BB2D323009BC977 /* PBXBuildFile.swift */,
 				B2C852481BB2D4CB009BC977 /* PBXFileReference.swift */,
+				B2C852421BB2AE4E009BC977 /* PBXBuildPhase.swift */,
+				B27CDFDF1BB52912001C79FF /* PBXProject.swift */,
+				B2C852401BB2AB68009BC977 /* PBXParser.swift */,
+				B27CDFE11BB539F1001C79FF /* XCConfigurationList.swift */,
+				B27CDFE31BB542EF001C79FF /* XCPBXResolver.swift */,
+				B27CDFE51BB54497001C79FF /* XCBuildConfiguration.swift */,
 			);
 			path = PBXEditor;
 			sourceTree = "<group>";
@@ -155,9 +167,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				B2C852451BB2B619009BC977 /* PBXGroup.swift in Sources */,
+				B27CDFE41BB542EF001C79FF /* XCPBXResolver.swift in Sources */,
 				B2C852471BB2D323009BC977 /* PBXBuildFile.swift in Sources */,
 				B2C852491BB2D4CB009BC977 /* PBXFileReference.swift in Sources */,
 				B2C852411BB2AB68009BC977 /* PBXParser.swift in Sources */,
+				B27CDFE61BB54497001C79FF /* XCBuildConfiguration.swift in Sources */,
+				B27CDFE01BB52912001C79FF /* PBXProject.swift in Sources */,
+				B27CDFE21BB539F1001C79FF /* XCConfigurationList.swift in Sources */,
 				B2C852431BB2AE4E009BC977 /* PBXBuildPhase.swift in Sources */,
 				B213EFC51BB123AA00577E46 /* PBXDictionary.swift in Sources */,
 				B213EFC31BB109C700577E46 /* PBXObject.swift in Sources */,

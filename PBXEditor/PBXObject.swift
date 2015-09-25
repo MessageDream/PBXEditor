@@ -10,7 +10,7 @@ import Foundation
 
 public class PBXObject:CustomStringConvertible{
     
-    internal let isaKey = "isa"
+    private let isaKey = "isa"
     
     internal var _guid:String!
     internal var _data:[String:Any]!
@@ -35,20 +35,20 @@ public class PBXObject:CustomStringConvertible{
         return "{" + self.toCSV() + "}"
     }
     
-   required public init(){
+    public required  init(){
         _data = [:]
         _data[isaKey] = _stdlib_getDemangledTypeName(self).componentsSeparatedByString(".").last!
         _guid = self.dynamicType.generateGuid()
     }
     
-   required public convenience init(guid:String){
+    public required  convenience init(guid:String){
         self.init()
         if self.dynamicType.isGuid(guid){
             _guid = guid
         }
     }
     
-   required public convenience init(guid:String,dictonary:[String:Any]){
+    public required convenience init(guid:String,dictonary:[String:Any]){
         self.init(guid: guid)
         guard let isa = dictonary[isaKey] as? String where isa == _stdlib_getDemangledTypeName(self).componentsSeparatedByString(".").last! else {
             print("Dictionary is not a valid ISA object")

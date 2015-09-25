@@ -9,15 +9,23 @@
 import Foundation
 
 public class PBXFileReference:PBXObject{
-    internal let pathKey = "path";
-    internal let nameKey = "name";
-    internal let sourcetreeKey = "sourceTree";
-    internal let explicitFileTypeKey = "explicitFileType";
-    internal let lastknownFileTypeKey = "lastKnownFileType";
-    internal let encodingKey = "fileEncoding";
+    private let pathKey = "path";
+    private let nameKey = "name";
+    private let sourcetreeKey = "sourceTree";
+    private let explicitFileTypeKey = "explicitFileType";
+    private let lastknownFileTypeKey = "lastKnownFileType";
+    private let encodingKey = "fileEncoding";
     
     public var compilerFlags:String?
     public var buildPhase:String?
+    
+    public var name:String?{
+        return _data[nameKey] as? String
+    }
+    
+    public var path:String?{
+        return _data[pathKey] as? String
+    }
     
     public static let typeNames = [
         ".a":"archive.ar",
@@ -47,13 +55,13 @@ public class PBXFileReference:PBXObject{
     
     public static let typePhases = [
         ".a": "PBXFrameworksBuildPhase",
-        ".app": nil,
+        //        ".app": nil,
         ".s": "PBXSourcesBuildPhase",
         ".c": "PBXSourcesBuildPhase",
         ".cpp": "PBXSourcesBuildPhase",
         ".framework": "PBXFrameworksBuildPhase",
-        ".h": nil,
-        ".pch": nil,
+        //        ".h": nil,
+        //        ".pch": nil,
         ".icns": "PBXResourcesBuildPhase",
         ".m": "PBXSourcesBuildPhase",
         ".mm": "PBXSourcesBuildPhase",
@@ -64,13 +72,44 @@ public class PBXFileReference:PBXObject{
         ".tiff": "PBXResourcesBuildPhase",
         ".txt": "PBXResourcesBuildPhase",
         ".json": "PBXResourcesBuildPhase",
-        ".xcodeproj": nil,
+        //        ".xcodeproj": nil,
         ".xib": "PBXResourcesBuildPhase",
         ".strings": "PBXResourcesBuildPhase",
         ".bundle": "PBXResourcesBuildPhase",
         ".dylib": "PBXFrameworksBuildPhase"
     ]
     
-
+    public required init() {
+        super.init()
+    }
     
+    public convenience init(filePath:String,tree:TreeEnum = .SourceRoot) {
+        self.init()
+        self.add(pathKey, obj: filePath)
+        self.add(nameKey, obj: NSFileManager.defaultManager().displayNameAtPath(filePath))
+        self.add(sourcetreeKey, obj:(filePath.hasPrefix("/") ?.Absolute : tree).rawValue)
+        self.guessFileType()
+    }
+    
+    public func guessFileType() -> (){
+        self.remove(explicitFileTypeKey)
+        self.remove(lastknownFileTypeKey)
+        let ext = String(_data[pathKey]).componentsSeparatedByString(".").last!
+        if !self.dynamicType.typeNames.keys.contains(ext) {
+            print("Unknown file extension: \(ext)\nPlease add extension and Xcode type to \(self.dynamicType).types")
+            return
+        }
+        
+        self.add(lastknownFileTypeKey, obj: self.dynamicType.typeNames[ext])
+        self.buildPhase = self.dynamicType.typePhases[ext]
+    }
+}
+
+public enum TreeEnum:String{
+    case Absolute = "<absolute>"
+    case Group = "<group>"
+    case BuiltProductsDir = "BUILT_PRODUCTS_DIR"
+    case DeveloperDir = "DEVELOPER_DIR"
+    case Sdkroot = "SDKROOT"
+    case SourceRoot = "SOURCE_ROOT"
 }
