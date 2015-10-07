@@ -79,3 +79,88 @@ public class PBXResolver{
         return self.resolveName(parent.guid)
     }
 }
+
+public class PBXParser{
+    public let pbxHeaderToken = "// !$*UTF8*$!\n"
+    public let whiteSpaceSpace:Character = " "
+    public let whiteSpaceTab:Character = "\t"
+    public let whiteSpaceNewLine:Character = "\n"
+    public let whiteSpaceCarriageReturn:Character = "\r"
+    public let arrayBeginToken:Character = "("
+    public let arrayEndToken:Character = ")"
+    public let arrayItemDelimiterToken:Character = ","
+    public let dictionaryBeginToken:Character = "{"
+    public let dictionaryEndToken:Character = "}"
+    public let dictionaryAssignToken:Character = "="
+    public let dictionaryItemDelimiterToken:Character = ";"
+    public let quotedStringBeginToken:Character = "\""
+    public let quotedStringEndToken:Character = "\""
+    public let quotedStringEscapeToken:Character = "\\"
+    public let endOfFile =  "\u{1A}"
+    public let commitBeginToken = "/*"
+    public let commitEndToken = "*/"
+    public let commitLineToken = "//"
+    private let builderCapacity = 2000
+    
+    private var marker:String?
+    private var data:[Character] = []
+    private var index = 0
+    private var resolver: PBXResolver!
+    
+    public required init(resolver:PBXResolver){
+        self.resolver = resolver
+    }
+    
+    public func decode(var inputData:String) -> [String:Any]? {
+        guard inputData.hasPrefix(self.pbxHeaderToken) else{
+            print("Wrong file format.")
+            return nil
+        }
+        
+        inputData = inputData.substringFromIndex(inputData.startIndex.advancedBy(13))
+        
+        for item in inputData.characters{
+            self.data.append(item)
+        }
+        
+        return self.paseValue() as? [String:Any]
+    }
+    
+    public func encode(pbxData:[String:Any], readable:Bool = false) -> String? {
+        let muString = NSMutableString(capacity: builderCapacity)
+        muString.appendString("\(pbxHeaderToken)")
+        let success = self.serializeValue(pbxData, mutableStrung: muString)
+        muString.appendString("\n")
+        return success ?String(muString):nil
+    }
+    
+    private func indent(muString:NSMutableString,deep:Int) -> (){
+        muString.appendString("".stringByPaddingToLength(deep, withString: "\t", startingAtIndex: 0))
+    }
+    
+    private func endLine(muString:NSMutableString,useSpace:Bool = false) -> (){
+        muString.appendString(useSpace ?" ":"\n")
+    }
+    
+    private func markSection(muString:NSMutableString,name:String){
+        if let mak = self.marker where mak != name{
+        muString.appendString("/* End \(mak) section */\n")
+        }
+        
+        if name != self.marker{
+            muString.appendString("\n/* Begin \(name) section */\n")
+        }
+        
+        self.marker = name
+    }
+    
+    
+    private func paseValue() -> Any {
+        return ""
+    }
+    
+   private func  serializeValue(pbxData:Any,mutableStrung:NSMutableString, readable:Bool = false,indent:Int = 0) -> Bool {
+        return true
+    }
+    
+}
