@@ -96,10 +96,10 @@ public class PBXParser{
     public let quotedStringBeginToken:Character = "\""
     public let quotedStringEndToken:Character = "\""
     public let quotedStringEscapeToken:Character = "\\"
-    public let endOfFile =  "\u{1A}"
-    public let commitBeginToken = "/*"
-    public let commitEndToken = "*/"
-    public let commitLineToken = "//"
+    public let endOfFile:Character =  "\u{1A}"
+    public let commentBeginToken = "/*"
+    public let commentEndToken = "*/"
+    public let commentLineToken = "//"
     private let builderCapacity = 2000
     
     private var marker:String?
@@ -144,7 +144,7 @@ public class PBXParser{
     
     private func markSection(muString:NSMutableString,name:String){
         if let mak = self.marker where mak != name{
-        muString.appendString("/* End \(mak) section */\n")
+            muString.appendString("/* End \(mak) section */\n")
         }
         
         if name != self.marker{
@@ -154,12 +154,193 @@ public class PBXParser{
         self.marker = name
     }
     
-    
-    private func paseValue() -> Any {
-        return ""
+    private func guidComment(guid:String,muString:NSMutableString) ->Bool {
+        guard let fileName = self.resolver.resolveName(guid) else {
+            print(("GUIDComment \(guid) [no filename]"))
+            return false
+        }
+        
+        if let location = self.resolver.resolveBuildPhaseNameForFile(guid){
+            muString.appendString(" /* \(fileName) in \(location) */")
+        }else{
+            muString.appendString(" /* \(fileName) */")
+        }
+        
+        return true
     }
     
-   private func  serializeValue(pbxData:Any,mutableStrung:NSMutableString, readable:Bool = false,indent:Int = 0) -> Bool {
+    private func peek(step:Int = 1) -> String {
+        var sneak = ""
+        for i in 1...step {
+            if self.data.count - 1 < self.index + i {
+                break
+            }
+            sneak  +=  String(self.data[self.index + i])
+        }
+        return sneak
+    }
+    
+    private func skipWhiteSpace() -> Bool {
+        var isWhiteSpace = false
+        while self.stepForeward() == " " {
+            isWhiteSpace = true
+        }
+        
+        self.stepBackward()
+        
+        if self.skipComments() {
+            isWhiteSpace = true
+            self.skipWhiteSpace()
+        }
+        return isWhiteSpace
+    }
+    
+    private func skipComments() -> Bool {
+        var s = ""
+        let tag = peek(2)
+        switch tag {
+        case commentBeginToken:
+            while self.peek(2) != commentEndToken {
+                s += String(self.stepForeward())
+            }
+            s += String(self.stepForeward(2))
+            break
+        case commentLineToken:
+            while self.stepForeward() != "\n" {
+                continue
+            }
+            break
+        default:
+            return false
+        }
+        
+        return true
+    }
+    
+    private func stepForeward(step:Int = 1) -> Character {
+        self.index = min(self.data.count, self.index + step)
+        return self.data[self.index]
+    }
+    
+    private func stepBackward(step:Int = 1) -> Character {
+        self.index = max(0, self.index - step)
+        return self.data[self.index]
+    }
+    
+    private func nextToken() -> Character {
+        self.skipWhiteSpace()
+        return self.stepForeward()
+    }
+    
+    private func paseValue() -> Any? {
+        switch self.nextToken() {
+        case endOfFile:
+            print("end of file")
+            return nil
+        case dictionaryBeginToken:
+            return self.parseDictionary()
+        case arrayBeginToken:
+            return self.parseArray()
+        case quotedStringBeginToken:
+            return self.parseString()
+        default:
+            self.stepBackward()
+            return self.parseEntity()
+        }
+    }
+    
+    private func parseDictionary() -> [String:Any] {
+        self.skipWhiteSpace()
+        var dic:[String:Any] = [:]
+        var keyString = ""
+        var valueObject:Any?
+        var complete = false
+        while !complete {
+            switch self.nextToken() {
+            case endOfFile:
+                print("Error: reached end of file inside a dictionary: \(self.index)")
+                complete = true
+                break
+            case dictionaryItemDelimiterToken:
+                keyString = ""
+                valueObject = nil
+                break
+            case dictionaryEndToken:
+                keyString = ""
+                valueObject = nil
+                complete = true
+            case dictionaryAssignToken:
+                valueObject = self.paseValue()
+                if !dic.keys.contains(keyString) {
+                    dic[keyString] = valueObject
+                }
+                break
+            default:
+                self.stepBackward()
+                if let value = self.paseValue() where value is String {
+                    keyString = value as! String
+                }
+                break
+                
+            }
+        }
+        
+        return dic
+    }
+    
+    private func parseArray() -> [Any] {
+        var list:[Any] = []
+        var complete = false
+        while !complete {
+            switch self.nextToken() {
+            case endOfFile:
+                print("Error: reached end of file inside a dictionary: \(self.index)")
+                complete = true
+                break
+            case arrayEndToken:
+                complete = true
+                break
+            case arrayItemDelimiterToken:
+                break
+            default:
+                self.stepBackward()
+                list.append(self.paseValue())
+                break
+            }
+        }
+        return list
+    }
+    
+    private func parseString() -> String {
+        var s = ""
+        var c = self.stepForeward()
+        
+        while c != quotedStringEndToken {
+            s += String(c)
+            if c == quotedStringEscapeToken {
+                s += String(self.stepForeward())
+            }
+            c = self.stepForeward()
+        }
+        return s
+    }
+    
+    private func parseEntity() -> Any {
+       var word = ""
+            let regex = NSPredicate(format:"SELF MATCHES %@", "[;,\\s=]")
+            let peekStr = self.peek()
+        while !regex.evaluateWithObject(peekStr){
+            word += String( self.stepForeward())
+        }
+        
+        let regex2 = NSPredicate(format: "SELF MATCHES %@","^\\d$")
+        if word.characters.count != 24 && regex2.evaluateWithObject(word){
+            return Int(word)
+        }
+        return word
+    }
+    
+    private func  serializeValue(pbxData:Any,mutableStrung:NSMutableString, readable:Bool = false,indent:Int = 0) -> Bool {
         return true
     }
     
