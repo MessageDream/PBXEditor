@@ -9,8 +9,8 @@
 import Foundation
 
 public class PBXProject:PBXObject{
-    private let mainGroupKey = "mainGroup"
-    private let knownRegionsKey = "knownRegions"
+    private let main_group_key = "mainGroup"
+    private let known_regions_key = "knownRegions"
     
     private var clearedLoc = false
     
@@ -19,22 +19,22 @@ public class PBXProject:PBXObject{
     }
     
     public var mainGroupID:String{
-        return String(_data[mainGroupKey])
+        return String(_data[main_group_key])
     }
     
     public var knownRegions:[String]{
-        return _data[knownRegionsKey] as! [String]
+        return _data[known_regions_key] as! [String]
     }
     
     public func addRegion(regin:String) -> (){
         guard self.clearedLoc else{
-            _data[knownRegionsKey] = [String]()
+            _data[known_regions_key] = [String]()
             self.clearedLoc = true
             return
         }
         
         var regions = self.knownRegions
         regions.append(regin)
-        _data[knownRegionsKey] = regions
+        _data[known_regions_key] = regions
     }
 }

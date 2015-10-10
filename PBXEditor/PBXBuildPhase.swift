@@ -10,13 +10,13 @@ import Foundation
 
 public class PBXBuildPhase:PBXObject{
     
-    private let filesKey = "files"
+    private let files_key = "files"
     
     public var files:[String]{
-        if !self.containsKey(filesKey){
-            self.add(filesKey, obj:[String]())
+        if !self.containsKey(files_key){
+            self.add(files_key, obj:[String]())
         }
-        return  self.data[filesKey] as! [String]
+        return  self.data[files_key] as! [String]
     }
     
     public required init() {
@@ -35,7 +35,7 @@ public class PBXBuildPhase:PBXObject{
         
         var fs = self.files
         fs.removeAtIndex(index)
-        _data[filesKey] = fs
+        _data[files_key] = fs
     }
     
     public func hasBuildFile (fid:String) -> Bool{

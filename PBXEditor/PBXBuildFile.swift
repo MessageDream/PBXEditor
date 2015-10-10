@@ -9,14 +9,14 @@
 import Foundation
 
 public class PBXBuildFile:PBXObject{
-    private let fileRefKey = "fileRef"
-    private let settingsKey = "settings"
-    private let attributesKey = "ATTRIBUTES"
-    private let weakValue = "Weak"
-    private let compilerFlagsKey = "COMPILER_FLAGS"
+    private let fileRef_key = "fileRef"
+    private let settings_key = "settings"
+    private let attributes_key = "ATTRIBUTES"
+    private let weak_value = "Weak"
+    private let compilerFlags_key = "COMPILER_FLAGS"
     
     public var fileRef:String{
-        return String(_data[fileRefKey])
+        return String(_data[fileRef_key])
     }
     
     public required init() {
@@ -25,96 +25,62 @@ public class PBXBuildFile:PBXObject{
     
     public convenience init(fileRef:PBXFileReference,weak:Bool = false){
         self.init()
-        
-        self.add(fileRefKey, obj: fileRef.guid)
+        self.add(fileRef_key, obj: fileRef.guid)
     }
     
-    public func setWeakLink(weak:Bool = false) -> Bool {
-        var settings:[String:Any]!
-        var attributes:[String]!
-        if !self.containsKey(settingsKey){
-            if weak {
-                attributes = []
-                attributes.append(weakValue)
-                
-                settings = [:]
-                settings[attributesKey] = attributes
-                _data[settingsKey] = settings
-            }
-            return true
-        }
-        
-        settings = _data[settingsKey] as! [String:Any]
-        if !settings.keys.contains(attributesKey){
-            if weak {
-                attributes = []
-                attributes.append(weakValue)
-                settings[attributesKey] = attributes
-                _data[settingsKey] = settings
-                return true
-            }
-            return false
-        }
-        
-        attributes = settings[attributesKey] as! [String]
-        
-        if weak {
-            attributes.append(weakValue)
-        }else{
-            if let wv = attributes.indexOf(weakValue){
-                attributes.removeAtIndex(wv)
+    public func setWeakLink(weak:Bool = false) -> () {
+        self.setSettings { (attributes) -> () in
+            if weak && !attributes.contains(weak_value){
+                attributes.append(weak_value)
+            }else{
+                if let wv = attributes.indexOf(weak_value){
+                    attributes.removeAtIndex(wv)
+                }
             }
         }
-        
-        settings[attributesKey] = attributes
-        self.add(settingsKey, obj: settings)
-        
-        return true
-        
     }
     
-    public func addCodeSignOnCopy() -> Bool {
-        if !self.containsKey(settingsKey){
-            _data[settingsKey] = [String:Any]()
+    public func addCodeSignOnCopy() -> () {
+        self.setSettings { (attributes) -> () in
+            if !attributes.contains("CodeSignOnCopy"){
+                attributes.append("CodeSignOnCopy")
+            }
+            if !attributes.contains("RemoveHeadersOnCopy"){
+                attributes.append("RemoveHeadersOnCopy")
+            }
         }
-        
-        var settings = _data[settingsKey] as! [String:Any]
-        if !settings.keys.contains(attributesKey){
-            var attributes = [String]()
-            attributes.append("CodeSignOnCopy")
-            attributes.append("RemoveHeadersOnCopy")
-            settings[attributesKey] = attributes
-        }else{
-            var attributes = settings[attributesKey] as! [String]
-            attributes.append("CodeSignOnCopy")
-            attributes.append("RemoveHeadersOnCopy")
-            settings[attributesKey] = attributes
-        }
-        return true
     }
     
-    public func addCompilerFlag(flag:String) -> Bool{
-        if !self.containsKey(settingsKey){
-            _data[settingsKey] = [String:Any]()
+    public func addCompilerFlag(flag:String) -> () {
+        var settings:[String:Any] = [:]
+        if let dic = _data[settings_key] as? [String:Any]{
+            settings = dic
         }
-        var  settings = _data[settingsKey] as! [String:Any]
-        guard settings.keys.contains(compilerFlagsKey) else{
-            settings[compilerFlagsKey] = flag
-            _data[settingsKey] = settings
-            return true
-        }
-       var flags = (settings[compilerFlagsKey] as! String).componentsSeparatedByString(" ")
-        if  flags.contains(flag){
-            return false
+        var flags:String = ""
+        if let flagsStr = settings[attributes_key] as? String{
+            flags = flagsStr
         }
         
-        flags.append(flag)
+        let flagsComponent = flags.componentsSeparatedByString(" ")
+        if !flagsComponent.contains(flag){
+            flags = flags + " " + flag
+        }
         
-        settings[compilerFlagsKey] = flags.joinWithSeparator(" ")
-        
-        _data[settingsKey] = settings
-        
-        return true
-        
+        settings[compilerFlags_key] = flags
+        _data[settings_key] = settings
+    }
+    
+    private func setSettings(@noescape operation: inout [String] -> ()) -> (){
+        var settings:[String:Any] = [:]
+        if let dic = _data[settings_key] as? [String:Any]{
+            settings = dic
+        }
+        var attributes:[String] = []
+        if let list = settings[attributes_key] as? [String]{
+            attributes = list
+        }
+        operation(&attributes)
+        settings[attributes_key] = attributes
+        _data[settings_key] = settings
     }
 }

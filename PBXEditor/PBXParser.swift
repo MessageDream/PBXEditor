@@ -81,26 +81,26 @@ public class PBXResolver{
 }
 
 public class PBXParser{
-    public let pbxHeaderToken = "// !$*UTF8*$!\n"
-    public let whiteSpaceSpace:Character = " "
-    public let whiteSpaceTab:Character = "\t"
-    public let whiteSpaceNewLine:Character = "\n"
-    public let whiteSpaceCarriageReturn:Character = "\r"
-    public let arrayBeginToken:Character = "("
-    public let arrayEndToken:Character = ")"
-    public let arrayItemDelimiterToken:Character = ","
-    public let dictionaryBeginToken:Character = "{"
-    public let dictionaryEndToken:Character = "}"
-    public let dictionaryAssignToken:Character = "="
-    public let dictionaryItemDelimiterToken:Character = ";"
-    public let quotedStringBeginToken:Character = "\""
-    public let quotedStringEndToken:Character = "\""
-    public let quotedStringEscapeToken:Character = "\\"
-    public let endOfFile:Character =  "\u{1A}"
-    public let commentBeginToken = "/*"
-    public let commentEndToken = "*/"
-    public let commentLineToken = "//"
-    private let builderCapacity = 2000
+    public let pbx_header_token = "// !$*UTF8*$!\n"
+    public let white_space_space:Character = " "
+    public let white_space_tab:Character = "\t"
+    public let white_space_newLine:Character = "\n"
+    public let white_space_carriage_return:Character = "\r"
+    public let array_begin_token:Character = "("
+    public let array_end_token:Character = ")"
+    public let array_item_delimiter_token:Character = ","
+    public let dictionary_begin_token:Character = "{"
+    public let dictionary_end_token:Character = "}"
+    public let dictionary_assign_token:Character = "="
+    public let dictionary_item_delimiter_token:Character = ";"
+    public let quoted_string_begin_token:Character = "\""
+    public let quoted_string_end_token:Character = "\""
+    public let quoted_string_escape_token:Character = "\\"
+    public let end_of_file:Character =  "\u{1A}"
+    public let comment_begin_token = "/*"
+    public let comment_end_token = "*/"
+    public let comment_line_token = "//"
+    private let builder_capacity = 2000
     
     private var marker:String?
     private var data:[Character] = []
@@ -112,7 +112,7 @@ public class PBXParser{
     }
     
     public func decode(var inputData:String) -> [String:Any]? {
-        guard inputData.hasPrefix(self.pbxHeaderToken) else{
+        guard inputData.hasPrefix(self.pbx_header_token) else{
             print("Wrong file format.")
             return nil
         }
@@ -127,9 +127,9 @@ public class PBXParser{
     }
     
     public func encode(pbxData:[String:Any], readable:Bool = false) -> String? {
-        let muString = NSMutableString(capacity: builderCapacity)
-        muString.appendString("\(pbxHeaderToken)")
-        let success = self.serializeValue(pbxData, mutableStrung: muString)
+        let muString = NSMutableString(capacity: builder_capacity)
+        muString.appendString("\(pbx_header_token)")
+        let success = self.serializeValue(pbxData, mutableString: muString)
         muString.appendString("\n")
         return success ?String(muString):nil
     }
@@ -199,13 +199,13 @@ public class PBXParser{
         var s = ""
         let tag = peek(2)
         switch tag {
-        case commentBeginToken:
-            while self.peek(2) != commentEndToken {
+        case comment_begin_token:
+            while self.peek(2) != comment_end_token {
                 s += String(self.stepForeward())
             }
             s += String(self.stepForeward(2))
             break
-        case commentLineToken:
+        case comment_line_token:
             while self.stepForeward() != "\n" {
                 continue
             }
@@ -234,14 +234,14 @@ public class PBXParser{
     
     private func paseValue() -> Any? {
         switch self.nextToken() {
-        case endOfFile:
+        case end_of_file:
             print("end of file")
             return nil
-        case dictionaryBeginToken:
+        case dictionary_begin_token:
             return self.parseDictionary()
-        case arrayBeginToken:
+        case array_begin_token:
             return self.parseArray()
-        case quotedStringBeginToken:
+        case quoted_string_begin_token:
             return self.parseString()
         default:
             self.stepBackward()
@@ -257,19 +257,19 @@ public class PBXParser{
         var complete = false
         while !complete {
             switch self.nextToken() {
-            case endOfFile:
+            case end_of_file:
                 print("Error: reached end of file inside a dictionary: \(self.index)")
                 complete = true
                 break
-            case dictionaryItemDelimiterToken:
+            case dictionary_item_delimiter_token:
                 keyString = ""
                 valueObject = nil
                 break
-            case dictionaryEndToken:
+            case dictionary_end_token:
                 keyString = ""
                 valueObject = nil
                 complete = true
-            case dictionaryAssignToken:
+            case dictionary_assign_token:
                 valueObject = self.paseValue()
                 if !dic.keys.contains(keyString) {
                     dic[keyString] = valueObject
@@ -287,20 +287,20 @@ public class PBXParser{
         
         return dic
     }
-    
+   
     private func parseArray() -> [Any] {
         var list:[Any] = []
         var complete = false
         while !complete {
             switch self.nextToken() {
-            case endOfFile:
+            case end_of_file:
                 print("Error: reached end of file inside a dictionary: \(self.index)")
                 complete = true
                 break
-            case arrayEndToken:
+            case array_end_token:
                 complete = true
                 break
-            case arrayItemDelimiterToken:
+            case array_item_delimiter_token:
                 break
             default:
                 self.stepBackward()
@@ -315,9 +315,9 @@ public class PBXParser{
         var s = ""
         var c = self.stepForeward()
         
-        while c != quotedStringEndToken {
+        while c != quoted_string_end_token {
             s += String(c)
-            if c == quotedStringEscapeToken {
+            if c == quoted_string_escape_token {
                 s += String(self.stepForeward())
             }
             c = self.stepForeward()
@@ -326,10 +326,9 @@ public class PBXParser{
     }
     
     private func parseEntity() -> Any {
-       var word = ""
-            let regex = NSPredicate(format:"SELF MATCHES %@", "[;,\\s=]")
-            let peekStr = self.peek()
-        while !regex.evaluateWithObject(peekStr){
+        var word = ""
+        let regex = NSPredicate(format:"SELF MATCHES %@", "[;,\\s=]")
+        while !regex.evaluateWithObject(self.peek()){
             word += String( self.stepForeward())
         }
         
@@ -340,8 +339,101 @@ public class PBXParser{
         return word
     }
     
-    private func  serializeValue(pbxData:Any,mutableStrung:NSMutableString, readable:Bool = false,indent:Int = 0) -> Bool {
+    
+    
+    private func  serializeValue(pbxData:Any?,mutableString:NSMutableString, readable:Bool = false,indent:Int = 0) -> Bool {
+        guard let value = pbxData else{
+            mutableString.appendString("null")
+            return true
+        }
+        if let pbxobj = value as? PBXObject {
+            self.serializeDictionary(pbxobj.data, muString: mutableString, readAble:readable, indent:indent)
+        }else if let dic = value as? [String:Any] {
+            self.serializeDictionary(dic, muString: mutableString, readAble:readable, indent:indent)
+        }else if let array = value as? Array<Any> {
+            self.serializeArray(array, muString:mutableString, readAble:readable, indent:indent)
+        }else if let va = value as? Bool {
+            self.serializeString(String(Int(va)), muString: mutableString,useQuotes: false)
+        }else{
+            self.serializeString(String(value), muString: mutableString,useQuotes: false)
+        }
         return true
+    }
+    
+    private func serializeDictionary(dictionary:[String:Any], muString:NSMutableString, readAble:Bool = false, indent:Int = 0) -> () {
+        muString.appendString(String(dictionary_begin_token))
+        if readAble {
+            endLine(muString)
+        }
+        
+        for (k,v) in dictionary {
+            if readAble && indent == 1 {
+                self.markSection(muString, name: k)
+            }
+            if readAble {
+                self.indent(muString, deep: indent + 1)
+            }
+            
+            self.serializeString(k, muString:muString,useQuotes: false)
+            muString.appendString(" \(dictionary_assign_token) ")
+            self.serializeValue(v, mutableString: muString,readable:(readAble && (!(v is PBXBuildFile) && !(v is PBXFileReference))),indent:indent + 1);
+            muString.appendString(String(dictionary_item_delimiter_token))
+            endLine(muString)
+        }
+        
+        if readAble && indent == 1 {
+            markSection(muString, name:"")
+        }
+        if readAble {
+            self.indent(muString, deep: indent)
+        }
+        muString.appendString(String(dictionary_end_token))
+    }
+    
+    private func serializeArray(array:[Any], muString:NSMutableString, readAble:Bool = false, indent:Int = 0) -> () {
+        muString.appendString(String(array_begin_token))
+        if readAble {
+            endLine(muString)
+        }
+        array.forEach{item in
+            if readAble {
+                self.indent(muString, deep: indent + 1)
+            }
+            self.serializeValue(item, mutableString: muString, readable: readAble, indent: indent + 1)
+            muString.appendString(String(array_item_delimiter_token))
+            endLine(muString)
+        }
+        if readAble {
+            self.indent(muString, deep: indent)
+        }
+        muString.appendString(String(array_end_token))
+    }
+    
+    private func serializeString(aString:String, muString:NSMutableString,var useQuotes:Bool = false) -> () {
+        let regex = NSPredicate(format:"SELF MATCHES %@", "^[A-Fa-f0-9]{24}$")
+        if regex.evaluateWithObject(aString){
+            muString.appendString(aString)
+            self.guidComment(aString, muString: muString)
+            return
+        }
+        if aString == "" {
+            muString.appendString(String(quoted_string_begin_token))
+            muString.appendString(String(quoted_string_end_token))
+            return
+        }
+        
+        let regex2 = NSPredicate(format:"SELF MATCHES %@", "^[A-Fa-f0-9_./-]+$")
+        if !regex2.evaluateWithObject(aString){
+            useQuotes =  true
+        }
+        
+        if useQuotes {
+            muString.appendString(String(quoted_string_begin_token))
+        }
+        muString.appendString(aString)
+        if useQuotes {
+            muString.appendString(String(quoted_string_end_token))
+        }
     }
     
 }

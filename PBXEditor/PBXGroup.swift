@@ -8,10 +8,10 @@
 
 import Foundation
 public class PBXGroup:PBXObject{
-    private let childrenKey = "children";
-    private let nameKey = "name"
-    private let pathKey = "path"
-    private let sourceTreeKey = "sourceTree"
+    private let children_key = "children";
+    private let name_key = "name"
+    private let path_key = "path"
+    private let sourcetree_key = "sourceTree"
     
     public required init(){
         super.init()
@@ -19,32 +19,32 @@ public class PBXGroup:PBXObject{
     
     public convenience init(name:String, path:String? = nil, tree:TreeEnum = .SourceRoot){
         self.init()
-        self.add(nameKey, obj: name)
+        self.add(name_key, obj: name)
         if let pa = path{
-            self.add(pathKey, obj: pa)
-            self.add(sourceTreeKey, obj: tree.rawValue)
+            self.add(path_key, obj: pa)
+            self.add(sourcetree_key, obj: tree.rawValue)
         }else{
-            self.add(sourceTreeKey, obj: TreeEnum.Absolute.rawValue)
+            self.add(sourcetree_key, obj: TreeEnum.Absolute.rawValue)
         }
     }
     
     public var children:[String]{
-        if !self.containsKey(childrenKey){
-            self.add(childrenKey, obj: [String]())
+        if !self.containsKey(children_key){
+            self.add(children_key, obj: [String]())
         }
-        return self.data[childrenKey] as! [String]
+        return self.data[children_key] as! [String]
     }
     
     public var name:String?{
-        return _data[nameKey] as? String
+        return _data[name_key] as? String
     }
     
     public var path:String?{
-        return _data[pathKey] as? String
+        return _data[path_key] as? String
     }
     
     public var sourceTree:String?{
-        return _data[sourceTreeKey] as? String
+        return _data[sourcetree_key] as? String
     }
     
     public func addChild(child:PBXObject) -> String? {
@@ -53,23 +53,23 @@ public class PBXGroup:PBXObject{
         }
         var chr = self.children
         chr.append(child.guid)
-        _data[childrenKey] = chr
+        _data[children_key] = chr
         return child.guid
     }
     
     public func removeChild(cid:String) -> (){
-        guard self.dynamicType.isGuid(cid) && self.containsKey(childrenKey) else{
+        guard self.dynamicType.isGuid(cid) && self.containsKey(children_key) else{
             return
         }
         var chr = self.children
         if let index = chr.indexOf(cid){
             chr.removeAtIndex(index)
         }
-        _data[childrenKey] = chr
+        _data[children_key] = chr
     }
     
     public func hasChild(cid:String) ->Bool {
-        guard self.dynamicType.isGuid(cid) && self.containsKey(childrenKey) else{
+        guard self.dynamicType.isGuid(cid) && self.containsKey(children_key) else{
             return false
         }
         return self.children.contains(cid)

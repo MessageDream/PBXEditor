@@ -9,22 +9,22 @@
 import Foundation
 
 public class PBXFileReference:PBXObject{
-    private let pathKey = "path";
-    private let nameKey = "name";
-    private let sourcetreeKey = "sourceTree";
-    private let explicitFileTypeKey = "explicitFileType";
-    private let lastknownFileTypeKey = "lastKnownFileType";
-    private let encodingKey = "fileEncoding";
+    private let path_key = "path";
+    private let name_key = "name";
+    private let sourcetree_key = "sourceTree";
+    private let explicit_fileType_key = "explicitFileType";
+    private let last_known_fileType_key = "lastKnownFileType";
+    private let encoding_key = "fileEncoding";
     
     public var compilerFlags:String?
     public var buildPhase:String?
     
     public var name:String?{
-        return _data[nameKey] as? String
+        return _data[name_key] as? String
     }
     
     public var path:String?{
-        return _data[pathKey] as? String
+        return _data[path_key] as? String
     }
     
     public static let typeNames = [
@@ -85,22 +85,22 @@ public class PBXFileReference:PBXObject{
     
     public convenience init(filePath:String,tree:TreeEnum = .SourceRoot) {
         self.init()
-        self.add(pathKey, obj: filePath)
-        self.add(nameKey, obj: NSFileManager.defaultManager().displayNameAtPath(filePath))
-        self.add(sourcetreeKey, obj:(filePath.hasPrefix("/") ?.Absolute : tree).rawValue)
+        self.add(path_key, obj: filePath)
+        self.add(name_key, obj: NSFileManager.defaultManager().displayNameAtPath(filePath))
+        self.add(sourcetree_key, obj:(filePath.hasPrefix("/") ?.Absolute : tree).rawValue)
         self.guessFileType()
     }
     
     public func guessFileType() -> (){
-        self.remove(explicitFileTypeKey)
-        self.remove(lastknownFileTypeKey)
-        let ext = String(_data[pathKey]).componentsSeparatedByString(".").last!
+        self.remove(explicit_fileType_key)
+        self.remove(last_known_fileType_key)
+        let ext = String(_data[path_key]).componentsSeparatedByString(".").last!
         if !self.dynamicType.typeNames.keys.contains(ext) {
             print("Unknown file extension: \(ext)\nPlease add extension and Xcode type to \(self.dynamicType).types")
             return
         }
         
-        self.add(lastknownFileTypeKey, obj: self.dynamicType.typeNames[ext])
+        self.add(last_known_fileType_key, obj: self.dynamicType.typeNames[ext])
         self.buildPhase = self.dynamicType.typePhases[ext]
     }
 }

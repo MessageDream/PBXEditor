@@ -28,13 +28,6 @@ public extension Dictionary where Key:StringType,Value:PBXObject{
                 }
             }
         }
-        
-        
-        //    public mutating func append(dictionary:[Key:Value]) -> () {
-        //        dictionary.forEach{
-        //            self[$0.0] = $0.1
-        //        }
-        //    }
     }
 }
 

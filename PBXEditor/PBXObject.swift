@@ -10,7 +10,7 @@ import Foundation
 
 public class PBXObject:CustomStringConvertible{
     
-    private let isaKey = "isa"
+    private let isa_key = "isa"
     
     internal var _guid:String!
     internal var _data:[String:Any]!
@@ -37,7 +37,7 @@ public class PBXObject:CustomStringConvertible{
     
     public required  init(){
         _data = [:]
-        _data[isaKey] = _stdlib_getDemangledTypeName(self).componentsSeparatedByString(".").last!
+        _data[isa_key] = _stdlib_getDemangledTypeName(self).componentsSeparatedByString(".").last!
         _guid = self.dynamicType.generateGuid()
     }
     
@@ -50,7 +50,7 @@ public class PBXObject:CustomStringConvertible{
     
     public required convenience init(guid:String,dictonary:[String:Any]){
         self.init(guid: guid)
-        guard let isa = dictonary[isaKey] as? String where isa == _stdlib_getDemangledTypeName(self).componentsSeparatedByString(".").last! else {
+        guard let isa = dictonary[isa_key] as? String where isa == _stdlib_getDemangledTypeName(self).componentsSeparatedByString(".").last! else {
             print("Dictionary is not a valid ISA object")
             return
         }
@@ -65,14 +65,16 @@ public class PBXObject:CustomStringConvertible{
     }
     
     public func remove(key:String) -> (){
-        _data.removeValueForKey(key)
+        if _data.keys.contains(key){
+            _data.removeValueForKey(key)
+        }
     }
     
     public func containsKey(key:String) -> Bool{
         return _data.keys.contains(key)
     }
     
-    func toCSV() -> String{
+    internal func toCSV() -> String{
         var ret = ""
         _data.forEach{
             ret += "<"

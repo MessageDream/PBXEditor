@@ -8,6 +8,12 @@
 
 import Foundation
 
+public class XCConfigurationList:PBXObject{
+    public required init(){
+        super.init()
+    }
+}
+
 public class XCPBXResolver:PBXResolver{
     public required init(pbxData:[String:Any]){
         super.init(pbxData:pbxData)
