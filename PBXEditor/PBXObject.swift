@@ -74,6 +74,20 @@ public class PBXObject:CustomStringConvertible{
         return _data.keys.contains(key)
     }
     
+    internal func settingDataDictinaryItem(dicKey:String,dicItemKey:String,@noescape dicItemInitOperation:Any? -> Any , @noescape dicItemOperation:inout Any -> ()) -> (){
+        var settings:[String:Any] = [:]
+        if let dic = _data[dicKey] as? [String:Any]{
+            settings = dic
+        }
+        var item = dicItemInitOperation(settings[dicItemKey])
+        
+        dicItemOperation(&item)
+        
+        settings[dicItemKey] = item
+        
+        _data[dicKey] = settings
+    }
+    
     internal func toCSV() -> String{
         var ret = ""
         _data.forEach{

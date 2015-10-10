@@ -60,24 +60,20 @@ public class XCBuildConfiguration:PBXObject{
     }
     
     private func addSettings(settingItems:[String],key:String, @noescape operation:(String, inout [String]) -> ()) -> (){
-        var settings:[String:Any] = [:]
-        if let dic = _data[buildSettings_key] as? [String:Any]{
-            settings = dic
+        self.settingDataDictinaryItem(buildSettings_key, dicItemKey: key, dicItemInitOperation: { (lst) -> Any in
+            var items:[String] = []
+            if let list = lst as? [String]{
+                items = list
+            }else if let path = lst as? String{
+                items.append(path)
+            }
+            return items
+            }) { (items) -> () in
+                var its = items as! [String]
+                settingItems.forEach{ item in
+                    operation(item,&its)
+                }
         }
-        
-        var items:[String] = []
-        if let list = settings[key] as? [String]{
-            items = list
-        }else if let path = settings[key] as? String{
-            items.append(path)
-        }
-        
-        settingItems.forEach{item in
-            operation(item,&items)
-        }
-        
-        settings[other_c_flags_key] = items
-        _data[buildSettings_key] = settings
     }
     
     private func addSearchPath(path:String, key:String, recursive:Bool = true) -> () {
@@ -85,7 +81,6 @@ public class XCBuildConfiguration:PBXObject{
     }
     
     private func addSearchPaths(paths:[String], key:String, recursive:Bool = true,var quoted:Bool = false) -> () {
-        
         self.addSettings(paths, key: key) { (path, items) -> () in
             var currentPath = path
             if currentPath.containsString(" ") {
