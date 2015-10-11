@@ -36,19 +36,14 @@
 /* Begin PBXFileReference section */
 		B2581CE91BCA657700BD5AA7 /* PBXSample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PBXSample; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2581CEC1BCA657700BD5AA7 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		B2581CF31BCA65ED00BD5AA7 /* PBXEditor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PBXEditor.framework; path = ../build/Debug/PBXEditor.framework; sourceTree = "<group>"; };
-		B2581CF51BCA6BBA00BD5AA7 /* PBXEditor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PBXEditor.framework; path = "../../../../Library/Developer/Xcode/DerivedData/PBX-bzfekbunaddsnabvhwavaiyobsic/Build/Products/Debug/PBXEditor.framework"; sourceTree = "<group>"; };
-		B2581CF81BCA6E0100BD5AA7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2581CF91BCA6E0100BD5AA7 /* PBXBuildFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXBuildFile.swift; sourceTree = "<group>"; };
 		B2581CFA1BCA6E0100BD5AA7 /* PBXBuildPhase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXBuildPhase.swift; sourceTree = "<group>"; };
 		B2581CFB1BCA6E0100BD5AA7 /* PBXDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXDictionary.swift; sourceTree = "<group>"; };
-		B2581CFC1BCA6E0100BD5AA7 /* PBXEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXEditor.h; sourceTree = "<group>"; };
 		B2581CFD1BCA6E0100BD5AA7 /* PBXFileReference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXFileReference.swift; sourceTree = "<group>"; };
 		B2581CFE1BCA6E0100BD5AA7 /* PBXGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXGroup.swift; sourceTree = "<group>"; };
 		B2581CFF1BCA6E0100BD5AA7 /* PBXObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXObject.swift; sourceTree = "<group>"; };
 		B2581D001BCA6E0100BD5AA7 /* PBXParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXParser.swift; sourceTree = "<group>"; };
 		B2581D011BCA6E0100BD5AA7 /* PBXProject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXProject.swift; sourceTree = "<group>"; };
-		B2581D021BCA6E0100BD5AA7 /* TestPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TestPlayground.playground; sourceTree = "<group>"; };
 		B2581D031BCA6E0100BD5AA7 /* XCBuildConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCBuildConfiguration.swift; sourceTree = "<group>"; };
 		B2581D041BCA6E0100BD5AA7 /* XCPBXResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCPBXResolver.swift; sourceTree = "<group>"; };
 		B2581D051BCA6E0100BD5AA7 /* XCProject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCProject.swift; sourceTree = "<group>"; };
@@ -68,8 +63,6 @@
 		B2581CE01BCA657700BD5AA7 = {
 			isa = PBXGroup;
 			children = (
-				B2581CF51BCA6BBA00BD5AA7 /* PBXEditor.framework */,
-				B2581CF31BCA65ED00BD5AA7 /* PBXEditor.framework */,
 				B2581CEB1BCA657700BD5AA7 /* PBXSample */,
 				B2581CEA1BCA657700BD5AA7 /* Products */,
 			);
@@ -95,17 +88,14 @@
 		B2581CF71BCA6E0100BD5AA7 /* PBXEditor */ = {
 			isa = PBXGroup;
 			children = (
-				B2581CF81BCA6E0100BD5AA7 /* Info.plist */,
 				B2581CF91BCA6E0100BD5AA7 /* PBXBuildFile.swift */,
 				B2581CFA1BCA6E0100BD5AA7 /* PBXBuildPhase.swift */,
 				B2581CFB1BCA6E0100BD5AA7 /* PBXDictionary.swift */,
-				B2581CFC1BCA6E0100BD5AA7 /* PBXEditor.h */,
 				B2581CFD1BCA6E0100BD5AA7 /* PBXFileReference.swift */,
 				B2581CFE1BCA6E0100BD5AA7 /* PBXGroup.swift */,
 				B2581CFF1BCA6E0100BD5AA7 /* PBXObject.swift */,
 				B2581D001BCA6E0100BD5AA7 /* PBXParser.swift */,
 				B2581D011BCA6E0100BD5AA7 /* PBXProject.swift */,
-				B2581D021BCA6E0100BD5AA7 /* TestPlayground.playground */,
 				B2581D031BCA6E0100BD5AA7 /* XCBuildConfiguration.swift */,
 				B2581D041BCA6E0100BD5AA7 /* XCPBXResolver.swift */,
 				B2581D051BCA6E0100BD5AA7 /* XCProject.swift */,
