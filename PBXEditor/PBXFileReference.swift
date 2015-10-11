@@ -94,7 +94,7 @@ public class PBXFileReference:PBXObject{
     public func guessFileType() -> (){
         self.remove(explicit_fileType_key)
         self.remove(last_known_fileType_key)
-        let ext = String(_data[path_key]).componentsSeparatedByString(".").last!
+        let ext = String(_data[path_key]!).componentsSeparatedByString(".").last!
         if !self.dynamicType.typeNames.keys.contains(ext) {
             print("Unknown file extension: \(ext)\nPlease add extension and Xcode type to \(self.dynamicType).types")
             return

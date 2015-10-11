@@ -75,3 +75,10 @@ public class PBXGroup:PBXObject{
         return self.children.contains(cid)
     }
 }
+
+public class PBXVariantGroup : PBXGroup{
+    
+    public required init(){
+        super.init()
+    }
+}

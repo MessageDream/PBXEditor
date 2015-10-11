@@ -42,3 +42,8 @@ setSettings { (items) -> () in
     items.append("hede")
     items.append("wererre")
 }
+
+
+var proj = XCProject(filePath: "/Users/jayden/Documents/IOS/test/test.xcodeproj")
+
+

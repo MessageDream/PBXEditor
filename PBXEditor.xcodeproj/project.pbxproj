@@ -10,6 +10,7 @@
 		B213EFBA1BB1096700577E46 /* PBXEditor.h in Headers */ = {isa = PBXBuildFile; fileRef = B213EFB91BB1096700577E46 /* PBXEditor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B213EFC31BB109C700577E46 /* PBXObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = B213EFC21BB109C700577E46 /* PBXObject.swift */; settings = {ASSET_TAGS = (); }; };
 		B213EFC51BB123AA00577E46 /* PBXDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B213EFC41BB123AA00577E46 /* PBXDictionary.swift */; settings = {ASSET_TAGS = (); }; };
+		B2581CDF1BCA274200BD5AA7 /* XCProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2581CDE1BCA274200BD5AA7 /* XCProject.swift */; settings = {ASSET_TAGS = (); }; };
 		B27CDFE01BB52912001C79FF /* PBXProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27CDFDF1BB52912001C79FF /* PBXProject.swift */; settings = {ASSET_TAGS = (); }; };
 		B27CDFE41BB542EF001C79FF /* XCPBXResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27CDFE31BB542EF001C79FF /* XCPBXResolver.swift */; settings = {ASSET_TAGS = (); }; };
 		B27CDFE61BB54497001C79FF /* XCBuildConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27CDFE51BB54497001C79FF /* XCBuildConfiguration.swift */; settings = {ASSET_TAGS = (); }; };
@@ -27,6 +28,7 @@
 		B213EFC11BB109C700577E46 /* TestPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = TestPlayground.playground; sourceTree = "<group>"; };
 		B213EFC21BB109C700577E46 /* PBXObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXObject.swift; sourceTree = "<group>"; };
 		B213EFC41BB123AA00577E46 /* PBXDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXDictionary.swift; sourceTree = "<group>"; };
+		B2581CDE1BCA274200BD5AA7 /* XCProject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCProject.swift; sourceTree = "<group>"; };
 		B27CDFDF1BB52912001C79FF /* PBXProject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PBXProject.swift; sourceTree = "<group>"; };
 		B27CDFE31BB542EF001C79FF /* XCPBXResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCPBXResolver.swift; sourceTree = "<group>"; };
 		B27CDFE51BB54497001C79FF /* XCBuildConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCBuildConfiguration.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 				B2C852401BB2AB68009BC977 /* PBXParser.swift */,
 				B27CDFE31BB542EF001C79FF /* XCPBXResolver.swift */,
 				B27CDFE51BB54497001C79FF /* XCBuildConfiguration.swift */,
+				B2581CDE1BCA274200BD5AA7 /* XCProject.swift */,
 			);
 			path = PBXEditor;
 			sourceTree = "<group>";
@@ -171,6 +174,7 @@
 				B27CDFE61BB54497001C79FF /* XCBuildConfiguration.swift in Sources */,
 				B27CDFE01BB52912001C79FF /* PBXProject.swift in Sources */,
 				B2C852431BB2AE4E009BC977 /* PBXBuildPhase.swift in Sources */,
+				B2581CDF1BCA274200BD5AA7 /* XCProject.swift in Sources */,
 				B213EFC51BB123AA00577E46 /* PBXDictionary.swift in Sources */,
 				B213EFC31BB109C700577E46 /* PBXObject.swift in Sources */,
 			);

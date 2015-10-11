@@ -18,7 +18,7 @@ public class PBXBuildFile:PBXObject{
     private let remove_headers_on_copy = "RemoveHeadersOnCopy"
     
     public var fileRef:String{
-        return String(_data[fileRef_key])
+        return String(_data[fileRef_key]!)
     }
     
     public required init() {

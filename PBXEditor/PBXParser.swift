@@ -107,6 +107,10 @@ public class PBXParser{
     private var index = 0
     private var resolver: PBXResolver!
     
+    public required init(){
+        
+    }
+    
     public required init(resolver:PBXResolver){
         self.resolver = resolver
     }
@@ -169,20 +173,22 @@ public class PBXParser{
         return true
     }
     
-    private func peek(step:Int = 1) -> String {
+    private func peek(step:Int = 1) -> String? {
         var sneak = ""
         for i in 1...step {
             if self.data.count - 1 < self.index + i {
                 break
             }
+           
             sneak  +=  String(self.data[self.index + i])
         }
-        return sneak
+        return Optional(sneak)
     }
     
     private func skipWhiteSpace() -> Bool {
         var isWhiteSpace = false
-        while self.stepForeward() == " " {
+       let regex = try! NSRegularExpression(pattern: "\\s", options: .CaseInsensitive)
+        while let char = Optional(self.stepForeward()) where  regex.numberOfMatchesInString(String(char), options: [], range: NSMakeRange(0, 1)) > 0 {
             isWhiteSpace = true
         }
         
@@ -197,21 +203,22 @@ public class PBXParser{
     
     private func skipComments() -> Bool {
         var s = ""
-        let tag = peek(2)
-        switch tag {
-        case comment_begin_token:
-            while self.peek(2) != comment_end_token {
-                s += String(self.stepForeward())
+        if let tag = peek(2) {
+            switch tag {
+            case comment_begin_token:
+                while self.peek(2) != comment_end_token {
+                    s += String(self.stepForeward())
+                }
+                s += String(self.stepForeward(2))
+                break
+            case comment_line_token:
+                while self.stepForeward() != "\n" {
+                    continue
+                }
+                break
+            default:
+                return false
             }
-            s += String(self.stepForeward(2))
-            break
-        case comment_line_token:
-            while self.stepForeward() != "\n" {
-                continue
-            }
-            break
-        default:
-            return false
         }
         
         return true
@@ -219,11 +226,13 @@ public class PBXParser{
     
     private func stepForeward(step:Int = 1) -> Character {
         self.index = min(self.data.count, self.index + step)
+        print("========\(self.index)")
         return self.data[self.index]
     }
     
     private func stepBackward(step:Int = 1) -> Character {
         self.index = max(0, self.index - step)
+        print("========\(self.index)")
         return self.data[self.index]
     }
     
@@ -253,7 +262,6 @@ public class PBXParser{
         self.skipWhiteSpace()
         var dic:[String:Any] = [:]
         var keyString = ""
-        var valueObject:Any?
         var complete = false
         while !complete {
             switch self.nextToken() {
@@ -263,16 +271,15 @@ public class PBXParser{
                 break
             case dictionary_item_delimiter_token:
                 keyString = ""
-                valueObject = nil
                 break
             case dictionary_end_token:
                 keyString = ""
-                valueObject = nil
                 complete = true
             case dictionary_assign_token:
-                valueObject = self.paseValue()
                 if !dic.keys.contains(keyString) {
-                    dic[keyString] = valueObject
+                    if let v = self.paseValue() {
+                       dic[keyString] = v
+                    }
                 }
                 break
             default:
@@ -304,7 +311,9 @@ public class PBXParser{
                 break
             default:
                 self.stepBackward()
-                list.append(self.paseValue())
+                if let value = self.paseValue(){
+                    list.append(value)
+                }
                 break
             }
         }
@@ -327,14 +336,14 @@ public class PBXParser{
     
     private func parseEntity() -> Any {
         var word = ""
-        let regex = NSPredicate(format:"SELF MATCHES %@", "[;,\\s=]")
-        while !regex.evaluateWithObject(self.peek()){
-            word += String( self.stepForeward())
+        let regex = try! NSRegularExpression(pattern: "[;,\\s=]", options: .CaseInsensitive)
+        while let peekStr = self.peek() where regex.numberOfMatchesInString(peekStr, options: [], range:NSMakeRange(0, peekStr.characters.count)) <= 0 {
+            word += String(self.stepForeward())
         }
         
-        let regex2 = NSPredicate(format: "SELF MATCHES %@","^\\d$")
-        if word.characters.count != 24 && regex2.evaluateWithObject(word){
-            return Int(word)
+        let regex2 = try! NSRegularExpression(pattern: "^\\d$", options: .CaseInsensitive)
+        if word.characters.count != 24 && regex2.numberOfMatchesInString(word, options: [], range:NSMakeRange(0, word.characters.count)) > 0 {
+            return Int(word)!
         }
         return word
     }

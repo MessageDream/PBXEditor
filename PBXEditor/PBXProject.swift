@@ -19,7 +19,7 @@ public class PBXProject:PBXObject{
     }
     
     public var mainGroupID:String{
-        return String(_data[main_group_key])
+        return String(_data[main_group_key]!)
     }
     
     public var knownRegions:[String]{

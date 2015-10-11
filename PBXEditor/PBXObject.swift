@@ -37,7 +37,7 @@ public class PBXObject:CustomStringConvertible{
     
     public required  init(){
         _data = [:]
-        _data[isa_key] = _stdlib_getDemangledTypeName(self).componentsSeparatedByString(".").last!
+        _data[isa_key] = String(self.dynamicType)
         _guid = self.dynamicType.generateGuid()
     }
     
@@ -50,7 +50,7 @@ public class PBXObject:CustomStringConvertible{
     
     public required convenience init(guid:String,dictonary:[String:Any]){
         self.init(guid: guid)
-        guard let isa = dictonary[isa_key] as? String where isa == _stdlib_getDemangledTypeName(self).componentsSeparatedByString(".").last! else {
+        guard let isa = dictonary[isa_key] as? String where isa == String(self.dynamicType) else {
             print("Dictionary is not a valid ISA object")
             return
         }

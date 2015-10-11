@@ -18,7 +18,7 @@ extension String:StringType {
 
 public extension Dictionary where Key:StringType,Value:PBXObject{
     init(dictionary:[Key:Any]){
-        self.init()
+        self = [:]
         dictionary.forEach{
             if let dic = $0.1 as? [String:Any]{
                 if let isa = dic["isa"] as? String  where isa == String(Value){
@@ -36,7 +36,6 @@ public extension Dictionary{
         dictionary.forEach{
             self[$0.0] = $0.1
         }
-        
     }
 }
     
