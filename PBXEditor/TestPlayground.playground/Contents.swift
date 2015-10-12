@@ -44,7 +44,26 @@ setSettings { (items) -> () in
     items.append("wererre")
 }
 
+var filePath = ""
+var absPath = "/Users/jayden/Documents/GoProjects/src/golang.org/x/tools"
+var relativePath = "/Users/jayden"
 
-var proj = XCProject(filePath: "/Users/jayden/Documents/IOS/test/test.xcodeproj")
+var absComponents = absPath.componentsSeparatedByString("/")
+var rootComponents = relativePath.componentsSeparatedByString("/")
+var index = 0
+for i in 0..<absComponents.count {
+    if i <= rootComponents.count - 1 {
+        if absComponents[i] == rootComponents[i] {
+            continue
+        }
+    }
+    index = i
+    break
+}
 
-
+rootComponents.removeRange(0...index - 1 )
+absComponents.removeRange(0...index - 1)
+for _ in 0..<rootComponents.count {
+    filePath += "../"
+}
+filePath += absComponents.joinWithSeparator("/")

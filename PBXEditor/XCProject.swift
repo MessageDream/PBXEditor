@@ -238,4 +238,51 @@ public class XCProject{
             }
         }
     }
+   
+    public func getObject(guid:String) -> Any?{
+        return _objects[guid]
+    }
+    
+    private func getRelativePath(absPath:String,projPath:String) -> String {
+        var filePath = ""
+        var absComponents = absPath.componentsSeparatedByString("/")
+        var projComponents = projPath.componentsSeparatedByString("/")
+        var index = 0
+        for i in 0..<absComponents.count {
+            if i <= projComponents.count - 1 {
+                if absComponents[i] == projComponents[i] {
+                    continue
+                }
+            }
+            index = i
+            break
+        }
+        
+        projComponents.removeRange(0...index - 1 )
+        absComponents.removeRange(0...index - 1)
+        for _ in 0..<projComponents.count {
+            filePath += "../"
+        }
+        filePath += absComponents.joinWithSeparator("/")
+        return filePath
+    }
+    
+    public func addFile(var filePath:String, parent:PBXGroup? = nil, tree:String = "SOURCE_ROOT", creatBuildFiles:Bool = true, weak:Bool = false) -> [String:Any]{
+        var results = [String:Any]()
+        
+        var absPath = ""
+        if !filePath.hasPrefix("/") && tree != "SDKROOT"{
+            absPath = _fileManager.currentDirectoryPath + "/" + filePath
+        }
+        
+        if !_fileManager.fileExistsAtPath(absPath) && tree != "SDKROOT" {
+            print("Miss file: \(absPath)")
+            return results
+        }else if tree == "SOURCE_ROOT" {
+           print( "Source Root File" );
+          filePath = getRelativePath(absPath, projPath: _projectRootPath)
+        }
+        
+        return results
+    }
 }

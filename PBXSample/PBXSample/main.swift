@@ -8,7 +8,8 @@
 
 import Foundation
 
-var proj = XCProject(filePath: "/Users/jayden/Documents/WorkSpace/XCodeProject/PassbookCard/PassbookDemo.xcodeproj")
+//var proj = XCProject(filePath: "/Users/jayden/Documents/WorkSpace/XCodeProject/PassbookCard/PassbookDemo.xcodeproj")
+var proj = XCProject(filePath: "/Users/jayden/Documents/IOS/test/test.xcodeproj")
 
 //print(proj.buildConfiguration)
 proj.addHeaderSearchPath("122113131")
