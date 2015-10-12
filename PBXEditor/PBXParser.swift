@@ -226,13 +226,11 @@ public class PBXParser{
     
     private func stepForeward(step:Int = 1) -> Character {
         self.index = min(self.data.count, self.index + step)
-        print("========\(self.index)")
         return self.data[self.index]
     }
     
     private func stepBackward(step:Int = 1) -> Character {
         self.index = max(0, self.index - step)
-        print("========\(self.index)")
         return self.data[self.index]
     }
     

@@ -73,6 +73,7 @@ public class XCBuildConfiguration:PBXObject{
                 settingItems.forEach{ item in
                     operation(item,&its)
                 }
+                items = its
         }
     }
     

@@ -81,7 +81,7 @@ public class PBXBuildFile:PBXObject{
             }) { (attributes) -> () in
                 var attrs = attributes as! [String]
                 operation(&attrs)
-//                attributes = attrs
+                attributes = attrs
         }
     }
 }

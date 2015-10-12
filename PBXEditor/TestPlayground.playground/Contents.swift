@@ -8,6 +8,7 @@ var itemdata:[String:Any] = ["456":["789"]]
 
 var _data:[String:Any] = ["123":itemdata]
 
+
 internal func settingDataDictinaryItem(dicKey:String,dicItemKey:String,@noescape dicItemInitOperation:Any? -> Any , @noescape dicItemOperation:inout Any -> ()) -> (){
     var settings:[String:Any] = [:]
 

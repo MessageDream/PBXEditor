@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class PBXObject:CustomStringConvertible{
+public class PBXObject:CustomStringConvertible,CustomDebugStringConvertible{
     
     private let isa_key = "isa"
     
@@ -33,6 +33,10 @@ public class PBXObject:CustomStringConvertible{
     
     public var description:String{
         return "{" + self.toCSV() + "}"
+    }
+    
+    public var debugDescription:String{
+        return self.description
     }
     
     public required  init(){
@@ -79,6 +83,7 @@ public class PBXObject:CustomStringConvertible{
         if let dic = _data[dicKey] as? [String:Any]{
             settings = dic
         }
+        
         var item = dicItemInitOperation(settings[dicItemKey])
         
         dicItemOperation(&item)
@@ -89,17 +94,8 @@ public class PBXObject:CustomStringConvertible{
     }
     
     internal func toCSV() -> String{
-        var ret = ""
-        _data.forEach{
-            ret += "<"
-            ret += "\($0.0)"
-            ret += ", "
-            ret += "\($0.1)"
-            ret += ">, "
-        }
-        return "\"" + ret + "\","
+        return "\"\(data.description)\","
     }
-    
     
     static func generateGuid() -> String {
         let uuid = NSUUID().UUIDString
