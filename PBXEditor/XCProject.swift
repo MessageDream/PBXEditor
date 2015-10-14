@@ -18,7 +18,7 @@ public class XCProject{
     // Objects
     private var _buildFiles:[String:PBXBuildFile]!
     private var _groups:[String:PBXGroup]!
-    private var _fileReference:[String:PBXFileReference]!
+    private var _fileReferences:[String:PBXFileReference]!
     private var _nativeTarget:[String:PBXNativeTarget]!
     
     private var _frameworkBuildPhase:[String:PBXFrameworksBuildPhase]!
@@ -50,11 +50,11 @@ public class XCProject{
         return _groups!
     }
     
-    public var fileReference:[String:PBXFileReference]{
-        if _fileReference == nil {
-            _fileReference = [String:PBXFileReference](dictionary: _objects)
+    public var fileReferences:[String:PBXFileReference]{
+        if _fileReferences == nil {
+            _fileReferences = [String:PBXFileReference](dictionary: _objects)
         }
-        return _fileReference!
+        return _fileReferences!
     }
     
     public var nativeTarget:[String:PBXNativeTarget]{
@@ -152,7 +152,7 @@ public class XCProject{
         print("Opening project " + filePath)
         _projectRootPath = filePath.componentsSeparatedByString("/").dropLast().joinWithSeparator("/")
         _filePath = filePath
-       
+        
         do{
             let contents = try String(contentsOfFile: _filePath + "/project.pbxproj")
             let parser = PBXParser()
@@ -238,10 +238,278 @@ public class XCProject{
             }
         }
     }
-   
+    
     public func getObject(guid:String) -> Any?{
         return _objects[guid]
     }
+    
+   
+    
+    public func addFile(var filePath:String, var parent:PBXGroup? = nil, tree:TreeEnum = .SourceRoot, creatBuildFiles:Bool = true, weak:Bool = false) -> () {
+        
+        var absPath = ""
+        if !filePath.hasPrefix("/") && tree != .SDKRoot{
+            absPath = _fileManager.currentDirectoryPath + "/" + filePath
+        }
+        
+        let (exist,isDir) = isFileExistAndIsDir(absPath)
+        
+        if !exist && tree != .SDKRoot {
+            print("Miss file: \(absPath)")
+            return
+        }else if tree == .SourceRoot {
+            print( "Source Root File" );
+            filePath = getRelativePath(absPath, projPath: _projectRootPath)
+        }else if tree == .Group {
+            print("Group file")
+            filePath = _fileManager.displayNameAtPath(filePath)
+        }
+        
+        if parent == nil {
+            parent = _rootGroup
+        }
+        if isFileReferenceExist(_fileManager.displayNameAtPath(filePath)){
+            print("File already exists:\(filePath)")
+            return
+        }
+        
+        let fileRef = PBXFileReference(filePath: filePath, tree:tree)
+        parent?.addChild(fileRef)
+       _fileReferences[fileRef.guid] = fileRef
+        
+        if fileRef.buildPhase != nil && creatBuildFiles {
+            switch fileRef.buildPhase! {
+            case .PBXFrameworksBuildPhase:
+                frameworkBuildPhase.forEach({ (item) -> () in
+                    buildAddFile(fileRef, currentBuildPhase: item.1)
+                })
+                if tree == .SourceRoot {
+                   let libPath = "$(SRCROOT)/" + filePath.componentsSeparatedByString("/").dropLast().joinWithSeparator("/")
+                    if isDir{
+                       addFrameworkSearchPath(libPath)
+                    }else{
+                       addLibrarySearchPath(libPath)
+                    }
+                }
+                break
+            case .PBXResourcesBuildPhase:
+               resourcesBuildPhase.forEach({ (item) -> () in
+                buildAddFile(fileRef, currentBuildPhase: item.1)
+               })
+                break
+            case .PBXShellScriptBuildPhase:
+                shellScriptBuildPhase.forEach({ (item) -> () in
+                    buildAddFile(fileRef, currentBuildPhase: item.1)
+                })
+                break
+            case .PBXSourcesBuildPhase:
+                sourcesBuildPhase.forEach({ (item) -> () in
+                    buildAddFile(fileRef, currentBuildPhase: item.1)
+                })
+                break
+            case .PBXCopyFilesBuildPhase:
+                copyBuildPhase.forEach({ (item) -> () in
+                    buildAddFile(fileRef, currentBuildPhase: item.1)
+                })
+                break
+            default:
+                print("File not supported: \(filePath)")
+                break
+            }
+           print("Adding \(fileRef.buildPhase!.rawValue) build file")
+        }else{
+           print("File not supported: \(filePath)")
+        }
+        
+    }
+    
+    public func addEmbedFramework(fileName:String) -> () {
+        print("Add Embed Framework: " + fileName)
+        guard let  fileRef = getFile(_fileManager.displayNameAtPath(fileName)) else{
+            print("Embed Framework must added already: " + fileName)
+            return
+        }
+        
+        guard let embedPhase = addEmbedFrameworkBuildPhase() else{
+            print("AddEmbedFrameworkBuildPhase Failed.")
+            return
+        }
+        
+        let buildFile = PBXBuildFile(fileRef: fileRef)
+        buildFile.addCodeSignOnCopy()
+        _buildFiles[buildFile.guid] = buildFile
+        
+        embedPhase.addBuildFile(buildFile)
+        
+    }
+    
+    public func addFolder(folderPath:String, var parent:PBXGroup? = nil,var exclude:[String]? = nil,
+        recursive:Bool = true, creatBuildFile:Bool = true) -> () {
+            print("Folder path:\(folderPath)")
+            if !_fileManager.fileExistsAtPath(folderPath){
+                print("Directory doesn't exist?")
+                return
+            }
+            
+            if folderPath.hasSuffix(".lproj"){
+                addLocFolder(folderPath, parent: parent, exclude: exclude, recursive: recursive, creatBuildFile: creatBuildFile)
+                return
+            }
+            
+            if exclude == nil{
+                print("Exclude was nil")
+                exclude = []
+            }
+            
+            if parent == nil {
+                print("Parent was nil")
+                parent = _rootGroup
+            }
+            
+            let newGroup = getGroup(_fileManager.displayNameAtPath(folderPath),parent:parent)
+            print("New Group created")
+            let contents = try! _fileManager.contentsOfDirectoryAtPath(filePath)
+            for item in contents{
+                let itemPath = "\(filePath)/\(item)"
+            
+                let (exist,isDir) = isFileExistAndIsDir(itemPath)
+                
+                guard exist else {
+                    continue
+                }
+                if isDir{
+                    if itemPath.hasSuffix(".bundle"){
+                        print("This is a special folder: \(itemPath)")
+                        addFile(itemPath, parent: newGroup, tree: TreeEnum.SourceRoot, creatBuildFiles: creatBuildFile)
+                        continue
+                    }
+                    
+                    if recursive {
+                        print("recursive")
+                        addFolder(itemPath, parent: newGroup, exclude: exclude, recursive: recursive, creatBuildFile: creatBuildFile)
+                    }
+                }else{
+                    if let regexExclude = exclude?.joinWithSeparator("|"){
+                        let regex = try! NSRegularExpression(pattern:regexExclude, options: .CaseInsensitive)
+                        if regex.numberOfMatchesInString(itemPath, options:[], range:NSMakeRange(0, itemPath.characters.count)) > 0 {
+                            continue
+                        }
+                        print("Adding Files for Folder")
+                        addFile(itemPath, parent: newGroup, tree: .SourceRoot, creatBuildFiles: creatBuildFile)
+                    }
+                }
+            }
+    }
+    
+    public func addLocFolder(folderPath:String, var parent:PBXGroup? = nil, var exclude:[String]? = nil,
+        recursive:Bool = true, creatBuildFile:Bool = true) -> () {
+            if exclude == nil{
+                exclude = []
+            }
+            
+            if parent == nil {
+                parent = _rootGroup
+            }
+            
+            let locName = _fileManager.displayNameAtPath(folderPath)
+            
+            let relativePath = getRelativePath(folderPath, projPath: _projectRootPath)
+            let newGroup = getGroup(locName, path: relativePath, parent: parent)
+           
+            let region = locName.substringToIndex(locName.endIndex.advancedBy(-".lproj".characters.count))
+           
+            _project.addRegion(region)
+            
+            let contents = try! _fileManager.contentsOfDirectoryAtPath(filePath)
+            for item in contents{
+                let itemPath = "\(filePath)/\(item)"
+                if let regexExclude = exclude?.joinWithSeparator("|"){
+                    let regex = try! NSRegularExpression(pattern:regexExclude, options: .CaseInsensitive)
+                    if regex.numberOfMatchesInString(itemPath, options:[], range:NSMakeRange(0, itemPath.characters.count)) > 0 {
+                        continue
+                    }
+                    
+                    let variant = PBXVariantGroup(name: _fileManager.displayNameAtPath(itemPath), path: nil, tree: TreeEnum.Group)
+                    _variantGroup[variant.guid] = variant
+                    newGroup!.addChild(variant)
+                    addFile(itemPath, parent: variant, tree: .Group, creatBuildFiles: creatBuildFile)
+                }
+            }
+    }
+    
+    private func getNativeTarget(name:String) -> PBXNativeTarget? {
+        var target: PBXNativeTarget? = nil
+        for item in nativeTarget {
+            if let na = item.1.data["name"] as? String where na == name{
+                target = item.1
+                break
+            }
+        }
+        return target
+    }
+    
+    private func getBuildActionMask() -> Int {
+        var mask = 0
+        for item in copyBuildPhase {
+            if let msk = item.1.data["buildActionMask"] as? Int {
+                mask = msk
+                break
+            }
+        }
+        return mask
+    }
+    
+    private func getFile(name:String) -> PBXFileReference? {
+        for item in fileReferences{
+            if let fName = item.1.name where fName == name{
+                return item.1
+            }
+        }
+        
+        return nil
+    }
+    
+    private func getGroup(name:String, path:String? = nil, var parent:PBXGroup? = nil) -> PBXGroup? {
+        if parent == nil {
+            parent = _rootGroup
+        }
+        for item in groups {
+            if let n = item.1.name where n == name && parent!.hasChild(item.0){
+                return item.1
+            }else if let p = item.1.path where p == name && parent!.hasChild(item.0){
+                return item.1
+            }
+        }
+        
+        let result = PBXGroup(name: name, path: path)
+        _groups[result.guid] = result
+        parent!.addChild(result)
+        return result
+    }
+    
+    private func addEmbedFrameworkBuildPhase() -> PBXCopyFilesBuildPhase? {
+        var phase:PBXCopyFilesBuildPhase? = nil
+        guard let nativeTarget = getNativeTarget("") else {
+            print("Not found Correct NativeTarget.")
+            return phase
+        }
+        
+        //check if embed framework buildPhase ex
+        for item in copyBuildPhase{
+            if let name = item.1.data["name"] as? String where name == "Embed Frameworks" {
+                return item.1
+            }
+        }
+        
+        let buildActionMask = getBuildActionMask()
+        phase = PBXCopyFilesBuildPhase(buildActionMask: buildActionMask)
+        var buildPhases = nativeTarget.data["buildPhases"] as? [Any]
+        buildPhases?.append(phase!.guid)
+        nativeTarget.add("buildPhases", obj:buildPhases)
+        _copyBuildPhase[phase!.guid] = phase!
+        return phase
+    }
+    
     
     private func getRelativePath(absPath:String,projPath:String) -> String {
         var filePath = ""
@@ -267,22 +535,35 @@ public class XCProject{
         return filePath
     }
     
-    public func addFile(var filePath:String, parent:PBXGroup? = nil, tree:String = "SOURCE_ROOT", creatBuildFiles:Bool = true, weak:Bool = false) -> [String:Any]{
-        var results = [String:Any]()
-        
-        var absPath = ""
-        if !filePath.hasPrefix("/") && tree != "SDKROOT"{
-            absPath = _fileManager.currentDirectoryPath + "/" + filePath
+    
+    
+    private func isFileReferenceExist(name:String) -> Bool {
+        for item in self.fileReferences {
+            guard item.1.name == name else {
+               continue
+            }
+            return true
         }
+        return false
+    }
+    
+    private func isFileExistAndIsDir(path:String) -> (Bool,Bool){
+        var isDirPointer:UnsafeMutablePointer<ObjCBool> = UnsafeMutablePointer<ObjCBool>(bitPattern: 1)
+        isDirPointer.initialize(ObjCBool(false))
+        let exist = _fileManager.fileExistsAtPath(path, isDirectory: isDirPointer)
+        let isDir = isDirPointer.memory.boolValue
         
-        if !_fileManager.fileExistsAtPath(absPath) && tree != "SDKROOT" {
-            print("Miss file: \(absPath)")
-            return results
-        }else if tree == "SOURCE_ROOT" {
-           print( "Source Root File" );
-          filePath = getRelativePath(absPath, projPath: _projectRootPath)
+        defer {
+            isDirPointer.destroy()
+            isDirPointer.dealloc(1)
+            isDirPointer = nil
         }
-        
-        return results
+        return (exist,isDir)
+    }
+    
+    private func buildAddFile(fileRef:PBXFileReference,currentBuildPhase:PBXBuildPhase, weak:Bool = false) -> () {
+        let buildFile = PBXBuildFile(fileRef:fileRef, weak: weak)
+        _buildFiles[buildFile.guid] = buildFile
+        currentBuildPhase.addBuildFile(buildFile)
     }
 }

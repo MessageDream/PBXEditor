@@ -17,7 +17,7 @@ public class PBXFileReference:PBXObject{
     private let encoding_key = "fileEncoding";
     
     public var compilerFlags:String?
-    public var buildPhase:String?
+    public var buildPhase:BuildPhaseEnum?
     
     public var name:String?{
         return _data[name_key] as? String
@@ -101,8 +101,17 @@ public class PBXFileReference:PBXObject{
         }
         
         self.add(last_known_fileType_key, obj: self.dynamicType.typeNames[ext])
-        self.buildPhase = self.dynamicType.typePhases[ext]
+        self.buildPhase = BuildPhaseEnum(rawValue:self.dynamicType.typePhases[ext] ?? "")
     }
+}
+
+public enum BuildPhaseEnum:String{
+    case PBXBuildPhaseNone = ""
+    case PBXFrameworksBuildPhase = "PBXFrameworksBuildPhase"
+    case PBXSourcesBuildPhase = "PBXSourcesBuildPhase"
+    case PBXResourcesBuildPhase = "PBXResourcesBuildPhase"
+    case PBXShellScriptBuildPhase = "PBXShellScriptBuildPhase"
+    case PBXCopyFilesBuildPhase = "PBXCopyFilesBuildPhase"
 }
 
 public enum TreeEnum:String{
@@ -110,6 +119,6 @@ public enum TreeEnum:String{
     case Group = "<group>"
     case BuiltProductsDir = "BUILT_PRODUCTS_DIR"
     case DeveloperDir = "DEVELOPER_DIR"
-    case Sdkroot = "SDKROOT"
+    case SDKRoot = "SDKROOT"
     case SourceRoot = "SOURCE_ROOT"
 }

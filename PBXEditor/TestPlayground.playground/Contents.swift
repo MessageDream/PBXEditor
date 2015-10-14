@@ -48,6 +48,9 @@ var filePath = ""
 var absPath = "/Users/jayden/Documents/GoProjects/src/golang.org/x/tools"
 var relativePath = "/Users/jayden"
 
+var dis = NSFileManager.defaultManager().displayNameAtPath(absPath)
+dis
+
 var absComponents = absPath.componentsSeparatedByString("/")
 var rootComponents = relativePath.componentsSeparatedByString("/")
 var index = 0
@@ -67,3 +70,7 @@ for _ in 0..<rootComponents.count {
     filePath += "../"
 }
 filePath += absComponents.joinWithSeparator("/")
+
+let loc =  "1234.lproj"
+
+loc.substringToIndex(loc.endIndex.advancedBy(-".lproj".characters.count))
