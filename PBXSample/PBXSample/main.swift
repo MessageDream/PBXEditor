@@ -9,11 +9,12 @@
 import Foundation
 
 //var proj = XCProject(filePath: "/Users/jayden/Documents/WorkSpace/XCodeProject/PassbookCard/PassbookDemo.xcodeproj")
-var proj = XCProject(filePath: "/Users/jayden/Documents/IOS/test/test.xcodeproj")
+var proj = XCProject(filePath: "/Users/jayden/Documents/IOS/autodemo/autodemo.xcodeproj")
 
 //print(proj.buildConfiguration)
 proj.addHeaderSearchPath("122113131")
 proj.addOtherCFlag("45678")
 //print(proj.groups)
-print(proj.buildConfiguration)
+proj.save()
+print(proj.buildConfigurations)
 

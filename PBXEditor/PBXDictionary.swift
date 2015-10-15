@@ -30,11 +30,14 @@ public extension Dictionary where Key:StringType,Value:PBXObject{
 }
 
 public extension Dictionary {
-    public mutating func append(dictionary:Dictionary) -> () {
-        dictionary.forEach{
-            self[$0.0] = $0.1
+    
+   public mutating func append<S: SequenceType
+        where S.Generator.Element == (Key,Value)>(other: S) {
+        for (k,v) in other {
+            self[k] = v
         }
     }
+    
     
     public var description:String{
         let result =  self.reduce("{") { (var value, item) -> String in
@@ -56,3 +59,9 @@ public extension Dictionary {
         return self.description
     }
 }
+
+//public extension Optional where Wrapped:SequenceType{
+//        public func toArray<S>() -> [S]{
+//    return
+//        }
+//}

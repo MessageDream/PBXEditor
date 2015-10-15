@@ -19,16 +19,16 @@ public class XCProject{
     private var _buildFiles:[String:PBXBuildFile]!
     private var _groups:[String:PBXGroup]!
     private var _fileReferences:[String:PBXFileReference]!
-    private var _nativeTarget:[String:PBXNativeTarget]!
+    private var _nativeTargets:[String:PBXNativeTarget]!
     
-    private var _frameworkBuildPhase:[String:PBXFrameworksBuildPhase]!
-    private var _resourcesBuildPhase:[String:PBXResourcesBuildPhase]!
-    private var _shellScriptBuildPhase:[String:PBXShellScriptBuildPhase]!
-    private var _sourcesBuildPhase:[String:PBXSourcesBuildPhase]!
-    private var _copyBuildPhase:[String:PBXCopyFilesBuildPhase]!
+    private var _frameworkBuildPhases:[String:PBXFrameworksBuildPhase]!
+    private var _resourcesBuildPhases:[String:PBXResourcesBuildPhase]!
+    private var _shellScriptBuildPhases:[String:PBXShellScriptBuildPhase]!
+    private var _sourcesBuildPhases:[String:PBXSourcesBuildPhase]!
+    private var _copyBuildPhases:[String:PBXCopyFilesBuildPhase]!
     
-    private var _variantGroup:[String:PBXVariantGroup]!
-    private var _buildConfiguration:[String:XCBuildConfiguration]!
+    private var _variantGroups:[String:PBXVariantGroup]!
+    private var _buildConfigurations:[String:XCBuildConfiguration]!
     private var _configurationLists:[String:XCConfigurationList]!
     
     private var _projectRootPath:String = ""
@@ -57,62 +57,62 @@ public class XCProject{
         return _fileReferences!
     }
     
-    public var nativeTarget:[String:PBXNativeTarget]{
-        if _nativeTarget == nil {
-            _nativeTarget = [String:PBXNativeTarget](dictionary: _objects)
+    public var nativeTargets:[String:PBXNativeTarget]{
+        if _nativeTargets == nil {
+            _nativeTargets = [String:PBXNativeTarget](dictionary: _objects)
         }
-        return _nativeTarget!
+        return _nativeTargets!
     }
     
     
-    public var frameworkBuildPhase:[String:PBXFrameworksBuildPhase]{
-        if _frameworkBuildPhase == nil {
-            _frameworkBuildPhase = [String:PBXFrameworksBuildPhase](dictionary: _objects)
+    public var frameworkBuildPhases:[String:PBXFrameworksBuildPhase]{
+        if _frameworkBuildPhases == nil {
+            _frameworkBuildPhases = [String:PBXFrameworksBuildPhase](dictionary: _objects)
         }
-        return _frameworkBuildPhase!
+        return _frameworkBuildPhases!
     }
     
-    public var resourcesBuildPhase:[String:PBXResourcesBuildPhase]{
-        if _resourcesBuildPhase == nil {
-            _resourcesBuildPhase = [String:PBXResourcesBuildPhase](dictionary: _objects)
+    public var resourcesBuildPhases:[String:PBXResourcesBuildPhase]{
+        if _resourcesBuildPhases == nil {
+            _resourcesBuildPhases = [String:PBXResourcesBuildPhase](dictionary: _objects)
         }
-        return _resourcesBuildPhase!
+        return _resourcesBuildPhases!
     }
     
-    public var shellScriptBuildPhase:[String:PBXShellScriptBuildPhase]{
-        if _shellScriptBuildPhase == nil {
-            _shellScriptBuildPhase = [String:PBXShellScriptBuildPhase](dictionary: _objects)
+    public var shellScriptBuildPhases:[String:PBXShellScriptBuildPhase]{
+        if _shellScriptBuildPhases == nil {
+            _shellScriptBuildPhases = [String:PBXShellScriptBuildPhase](dictionary: _objects)
         }
-        return _shellScriptBuildPhase!
+        return _shellScriptBuildPhases!
     }
     
-    public var sourcesBuildPhase:[String:PBXSourcesBuildPhase]{
-        if _sourcesBuildPhase == nil {
-            _sourcesBuildPhase = [String:PBXSourcesBuildPhase](dictionary: _objects)
+    public var sourcesBuildPhases:[String:PBXSourcesBuildPhase]{
+        if _sourcesBuildPhases == nil {
+            _sourcesBuildPhases = [String:PBXSourcesBuildPhase](dictionary: _objects)
         }
-        return _sourcesBuildPhase!
+        return _sourcesBuildPhases!
     }
     
-    public var copyBuildPhase:[String:PBXCopyFilesBuildPhase]{
-        if _copyBuildPhase == nil {
-            _copyBuildPhase = [String:PBXCopyFilesBuildPhase](dictionary: _objects)
+    public var copyBuildPhases:[String:PBXCopyFilesBuildPhase]{
+        if _copyBuildPhases == nil {
+            _copyBuildPhases = [String:PBXCopyFilesBuildPhase](dictionary: _objects)
         }
-        return _copyBuildPhase!
+        return _copyBuildPhases!
     }
     
     
-    public var variantGroup:[String:PBXVariantGroup]{
-        if _variantGroup == nil {
-            _variantGroup = [String:PBXVariantGroup](dictionary: _objects)
+    public var variantGroups:[String:PBXVariantGroup]{
+        if _variantGroups == nil {
+            _variantGroups = [String:PBXVariantGroup](dictionary: _objects)
         }
-        return _variantGroup!
+        return _variantGroups!
     }
     
-    public var buildConfiguration:[String:XCBuildConfiguration]{
-        if _buildConfiguration == nil {
-            _buildConfiguration = [String:XCBuildConfiguration](dictionary: _objects)
+    public var buildConfigurations:[String:XCBuildConfiguration]{
+        if _buildConfigurations == nil {
+            _buildConfigurations = [String:XCBuildConfiguration](dictionary: _objects)
         }
-        return _buildConfiguration!
+        return _buildConfigurations!
     }
     
     public var configurationLists:[String:XCConfigurationList]{
@@ -185,7 +185,7 @@ public class XCProject{
     }
     
     public func addHeaderSearchPaths(paths:[String]) -> () {
-        self.buildConfiguration.forEach { (k,v) -> () in
+        self.buildConfigurations.forEach { (k,v) -> () in
             v.addHeaderSearchPaths(paths)
         }
     }
@@ -195,7 +195,7 @@ public class XCProject{
     }
     
     public func addLibrarySearchPaths(paths:[String]) -> () {
-        self.buildConfiguration.forEach { (k,v) -> () in
+        self.buildConfigurations.forEach { (k,v) -> () in
             v.addLibrarySearchPaths(paths)
         }
     }
@@ -205,7 +205,7 @@ public class XCProject{
     }
     
     public func addFrameworkSearchPaths(paths:[String]) -> () {
-        self.buildConfiguration.forEach { (k,v) -> () in
+        self.buildConfigurations.forEach { (k,v) -> () in
             v.addFrameworkSearchPaths(paths)
         }
     }
@@ -215,7 +215,7 @@ public class XCProject{
     }
     
     public func addOtherCFlags(flags:[String]) -> () {
-        self.buildConfiguration.forEach { (k,v) -> () in
+        self.buildConfigurations.forEach { (k,v) -> () in
             v.addOtherCFlags(flags)
         }
     }
@@ -225,14 +225,14 @@ public class XCProject{
     }
     
     public func addOtherLinkerFlags(flags:[String]) -> () {
-        self.buildConfiguration.forEach { (k,v) -> () in
+        self.buildConfigurations.forEach { (k,v) -> () in
             v.addOtherLinkerFlags(flags)
         }
     }
     
     public func overWriteBuildSetting(settingName:String,settingValue:String, buildConfigName:String = "all") -> () {
         print("overwriteBuildSetting " + settingName + " " + settingValue + " " + buildConfigName)
-        self.buildConfiguration.forEach { (k,v) -> () in
+        self.buildConfigurations.forEach { (k,v) -> () in
             if String(v.data["name"]!) == buildConfigName || String(v.data["name"]!) == "all"{
                 v.overWriteBuildSetting(settingName, settingValue: settingValue)
             }
@@ -243,7 +243,7 @@ public class XCProject{
         return _objects[guid]
     }
     
-   
+    
     
     public func addFile(var filePath:String, var parent:PBXGroup? = nil, tree:TreeEnum = .SourceRoot, creatBuildFiles:Bool = true, weak:Bool = false) -> () {
         
@@ -268,47 +268,48 @@ public class XCProject{
         if parent == nil {
             parent = _rootGroup
         }
-        if isFileReferenceExist(_fileManager.displayNameAtPath(filePath)){
+        
+        if isFileReferenceExist(_fileManager.displayNameAtPath(filePath)) {
             print("File already exists:\(filePath)")
             return
         }
         
         let fileRef = PBXFileReference(filePath: filePath, tree:tree)
         parent?.addChild(fileRef)
-       _fileReferences[fileRef.guid] = fileRef
+        _fileReferences[fileRef.guid] = fileRef
         
         if fileRef.buildPhase != nil && creatBuildFiles {
             switch fileRef.buildPhase! {
             case .PBXFrameworksBuildPhase:
-                frameworkBuildPhase.forEach({ (item) -> () in
+                frameworkBuildPhases.forEach({ (item) -> () in
                     buildAddFile(fileRef, currentBuildPhase: item.1)
                 })
                 if tree == .SourceRoot {
-                   let libPath = "$(SRCROOT)/" + filePath.componentsSeparatedByString("/").dropLast().joinWithSeparator("/")
+                    let libPath = "$(SRCROOT)/" + filePath.componentsSeparatedByString("/").dropLast().joinWithSeparator("/")
                     if isDir{
-                       addFrameworkSearchPath(libPath)
+                        addFrameworkSearchPath(libPath)
                     }else{
-                       addLibrarySearchPath(libPath)
+                        addLibrarySearchPath(libPath)
                     }
                 }
                 break
             case .PBXResourcesBuildPhase:
-               resourcesBuildPhase.forEach({ (item) -> () in
-                buildAddFile(fileRef, currentBuildPhase: item.1)
-               })
+                resourcesBuildPhases.forEach({ (item) -> () in
+                    buildAddFile(fileRef, currentBuildPhase: item.1)
+                })
                 break
             case .PBXShellScriptBuildPhase:
-                shellScriptBuildPhase.forEach({ (item) -> () in
+                shellScriptBuildPhases.forEach({ (item) -> () in
                     buildAddFile(fileRef, currentBuildPhase: item.1)
                 })
                 break
             case .PBXSourcesBuildPhase:
-                sourcesBuildPhase.forEach({ (item) -> () in
+                sourcesBuildPhases.forEach({ (item) -> () in
                     buildAddFile(fileRef, currentBuildPhase: item.1)
                 })
                 break
             case .PBXCopyFilesBuildPhase:
-                copyBuildPhase.forEach({ (item) -> () in
+                copyBuildPhases.forEach({ (item) -> () in
                     buildAddFile(fileRef, currentBuildPhase: item.1)
                 })
                 break
@@ -316,9 +317,9 @@ public class XCProject{
                 print("File not supported: \(filePath)")
                 break
             }
-           print("Adding \(fileRef.buildPhase!.rawValue) build file")
+            print("Adding \(fileRef.buildPhase!.rawValue) build file")
         }else{
-           print("File not supported: \(filePath)")
+            print("File not supported: \(filePath)")
         }
         
     }
@@ -371,7 +372,7 @@ public class XCProject{
             let contents = try! _fileManager.contentsOfDirectoryAtPath(filePath)
             for item in contents{
                 let itemPath = "\(filePath)/\(item)"
-            
+                
                 let (exist,isDir) = isFileExistAndIsDir(itemPath)
                 
                 guard exist else {
@@ -415,9 +416,9 @@ public class XCProject{
             
             let relativePath = getRelativePath(folderPath, projPath: _projectRootPath)
             let newGroup = getGroup(locName, path: relativePath, parent: parent)
-           
+            
             let region = locName.substringToIndex(locName.endIndex.advancedBy(-".lproj".characters.count))
-           
+            
             _project.addRegion(region)
             
             let contents = try! _fileManager.contentsOfDirectoryAtPath(filePath)
@@ -430,16 +431,111 @@ public class XCProject{
                     }
                     
                     let variant = PBXVariantGroup(name: _fileManager.displayNameAtPath(itemPath), path: nil, tree: TreeEnum.Group)
-                    _variantGroup[variant.guid] = variant
+                    _variantGroups[variant.guid] = variant
                     newGroup!.addChild(variant)
                     addFile(itemPath, parent: variant, tree: .Group, creatBuildFiles: creatBuildFile)
                 }
             }
     }
     
+    public func consolidate() -> () {
+        
+        var consolidated:[String:Any] = [:]
+        consolidated.append(self.buildFiles.map({ (item) -> (String,Any) in
+            (item.0,item.1)
+        }).sort({$0.0 > $1.0}))//sort!
+        
+        consolidated.append(self.copyBuildPhases.map({ (item) -> (String,Any) in
+            (item.0,item.1)
+        }))
+        
+        consolidated.append(self.fileReferences.map({ (item) -> (String,Any) in
+            (item.0,item.1)
+        }).sort({$0.0 > $1.0}))//sort!
+        
+        consolidated.append(self.frameworkBuildPhases.map({ (item) -> (String,Any) in
+            (item.0,item.1)
+        }))
+        
+        consolidated.append(self.groups.map({ (item) -> (String,Any) in
+            (item.0,item.1)
+        }).sort({$0.0 > $1.0}))//sort!
+        
+        consolidated.append(self.nativeTargets.map({ (item) -> (String,Any) in
+            (item.0,item.1)
+        }));
+        
+        consolidated[_project.guid] = _project.data //TODO this should be named PBXProject?
+        
+        consolidated.append(self.resourcesBuildPhases.map({ (item) -> (String,Any) in
+            (item.0,item.1)
+        }))
+        
+        consolidated.append(self.shellScriptBuildPhases.map({ (item) -> (String,Any) in
+            (item.0,item.1)
+        }))
+        
+        consolidated.append(self.sourcesBuildPhases.map({ (item) -> (String,Any) in
+            (item.0,item.1)
+        }))
+        
+        consolidated.append(self.variantGroups.map({ (item) -> (String,Any) in
+            (item.0,item.1)
+        }))
+        
+        consolidated.append(self.buildConfigurations.map({ (item) -> (String,Any) in
+            (item.0,item.1)
+        }))
+        
+        consolidated.append(self.configurationLists.map({ (item) -> (String,Any) in
+            (item.0,item.1)
+        }))
+        
+        _objects = consolidated
+    }
+    
+    public func backup() -> () {
+        
+        let backupPath =  _filePath + "/project.backup.pbxproj"
+        
+        // Delete previous backup file
+        if _fileManager.fileExistsAtPath(backupPath){
+            try! _fileManager.removeItemAtPath(backupPath)
+        }
+        
+        // Backup original pbxproj file first
+        try! _fileManager.copyItemAtPath(_filePath + "/project.pbxproj", toPath: backupPath)
+    }
+    
+    private func createNewProject(result:[String:Any], path:String) -> () {
+        let parser = PBXParser(resolver: XCPBXResolver(pbxData: result))
+        try! parser.encode(result,readable: true)?.writeToFile(path, atomically: true, encoding: NSUTF8StringEncoding)
+    }
+    
+    public func save() -> () {
+        var result = [String:Any]()
+        result["archiveVersion"] = 1
+        result["classes"] = [String:Any]()
+        result["objectVersion"] = 46
+        
+        consolidate()
+        result["objects"] = _objects
+        result["rootObject"] = _rootObjectKey
+        let projectPath = self.filePath + "/project.pbxproj"
+        
+        // Delete old project file, in case of an IOException 'Sharing violation on path Error'
+        if _fileManager.fileExistsAtPath(projectPath){
+            try! _fileManager.removeItemAtPath(projectPath)
+        }
+        
+        // Parse result object directly into file
+        createNewProject(result,path: projectPath)
+    }
+    
+    
     private func getNativeTarget(name:String) -> PBXNativeTarget? {
         var target: PBXNativeTarget? = nil
-        for item in nativeTarget {
+        for item in nativeTargets {
             if let na = item.1.data["name"] as? String where na == name{
                 target = item.1
                 break
@@ -450,7 +546,7 @@ public class XCProject{
     
     private func getBuildActionMask() -> Int {
         var mask = 0
-        for item in copyBuildPhase {
+        for item in copyBuildPhases {
             if let msk = item.1.data["buildActionMask"] as? Int {
                 mask = msk
                 break
@@ -495,7 +591,7 @@ public class XCProject{
         }
         
         //check if embed framework buildPhase ex
-        for item in copyBuildPhase{
+        for item in copyBuildPhases{
             if let name = item.1.data["name"] as? String where name == "Embed Frameworks" {
                 return item.1
             }
@@ -506,7 +602,7 @@ public class XCProject{
         var buildPhases = nativeTarget.data["buildPhases"] as? [Any]
         buildPhases?.append(phase!.guid)
         nativeTarget.add("buildPhases", obj:buildPhases)
-        _copyBuildPhase[phase!.guid] = phase!
+        _copyBuildPhases[phase!.guid] = phase!
         return phase
     }
     
@@ -540,7 +636,7 @@ public class XCProject{
     private func isFileReferenceExist(name:String) -> Bool {
         for item in self.fileReferences {
             guard item.1.name == name else {
-               continue
+                continue
             }
             return true
         }
@@ -566,4 +662,5 @@ public class XCProject{
         _buildFiles[buildFile.guid] = buildFile
         currentBuildPhase.addBuildFile(buildFile)
     }
+    
 }

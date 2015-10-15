@@ -32,7 +32,9 @@ public class PBXGroup:PBXObject{
         if !self.containsKey(children_key){
             self.add(children_key, obj: [String]())
         }
-        return self.data[children_key] as! [String]
+        return (self.data[children_key]! as! [Any]).map({ (item) -> String in
+            item as! String
+        })
     }
     
     public var name:String?{
